@@ -1,0 +1,136 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Watt-Turnier Viertelfinale</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    table, th, td { border: 1px solid #000; }
+    th, td { padding: 8px; text-align: center; }
+    th { background-color: #3656A7; color: white; }
+    .navigation-button, .draw-button, .reset-button, .save-button {
+      margin: 10px 5px; padding: 8px 12px; background-color: #3656A7; color: white; border: none; cursor: pointer;
+    }
+    .navigation-button:hover, .draw-button:hover, .reset-button:hover, .save-button:hover { background-color: #2a4485; }
+    select { width: 100%; }
+  </style>
+</head>
+<body>
+  <h1>Viertelfinale</h1>
+
+  <a href="vorrunde_funktioniert_10.06.html"><button class="navigation-button">Zur Vorrunde</button></a>
+  <button class="draw-button" onclick="drawPairs()">Paarungen auslosen</button>
+  <button class="reset-button" onclick="resetPairs()">Paarungen zurücksetzen</button>
+  <button class="save-button" onclick="saveWinners()">Sieger speichern</button>
+  <a href="halbfinale.html"><button class="navigation-button">Zum Halbfinale</button></a>
+
+  <table id="quarterfinal">
+    <thead>
+      <tr><th>Platz</th><th>Mannschaft</th><th>Gesamtpunkte</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <h2>Paarungen</h2>
+  <table id="pairs">
+    <thead>
+      <tr><th>Match</th><th>Team A</th><th>Team B</th><th>Sieger</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+<script>
+let top8 = [];
+
+function loadQuarterfinalTeams() {
+  const teams = JSON.parse(localStorage.getItem('wattTeams')) || [];
+  teams.forEach(team => {
+    const totalPoints = team.rounds.reduce((sum, r) => sum + (r.points || 0), 0);
+    const totalGoals = team.rounds.reduce((sum, r) => sum + (r.goals || 0), 0);
+    team.totalScore = totalPoints * 100 + totalGoals;
+  });
+  teams.sort((a, b) => b.totalScore - a.totalScore);
+  top8 = teams.slice(0, 8);
+
+  const tbody = document.querySelector('#quarterfinal tbody');
+  tbody.innerHTML = '';
+  top8.forEach((team, index) => {
+    const row = tbody.insertRow();
+    row.insertCell(0).textContent = index + 1;
+    row.insertCell(1).textContent = `${team.player1} / ${team.player2}`;
+    row.insertCell(2).textContent = team.totalScore;
+  });
+
+  loadPairsFromStorage();
+}
+
+function drawPairs() {
+  if (top8.length < 8) { alert('Nicht genügend Teams!'); return; }
+  const shuffled = [...top8];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  const pairs = [];
+  for (let i = 0; i < shuffled.length; i += 2) {
+    pairs.push({ match: `Spiel ${i/2+1}`, teamA: `${shuffled[i].player1} / ${shuffled[i].player2}`, teamB: `${shuffled[i+1].player1} / ${shuffled[i+1].player2}`, winner: "" });
+  }
+  localStorage.setItem('quarterfinalPairs', JSON.stringify(pairs));
+  displayPairs(pairs);
+}
+
+function loadPairsFromStorage() {
+  const savedPairs = JSON.parse(localStorage.getItem('quarterfinalPairs')) || [];
+  if (savedPairs.length > 0) displayPairs(savedPairs);
+}
+
+function displayPairs(pairs) {
+  const tbody = document.querySelector('#pairs tbody');
+  tbody.innerHTML = '';
+  pairs.forEach(pair => {
+    const row = tbody.insertRow();
+    row.insertCell(0).textContent = pair.match;
+    row.insertCell(1).textContent = pair.teamA;
+    row.insertCell(2).textContent = pair.teamB;
+    const selectCell = row.insertCell(3);
+    const select = document.createElement('select');
+    select.className = 'winner-select';
+    select.dataset.match = pair.match;
+    select.innerHTML = `<option value="">Sieger wählen</option><option value="Team A">Team A</option><option value="Team B">Team B</option>`;
+    if (pair.winner) select.value = (pair.winner === pair.teamA) ? 'Team A' : 'Team B';
+    selectCell.appendChild(select);
+  });
+}
+
+function saveWinners() {
+  const pairs = JSON.parse(localStorage.getItem('quarterfinalPairs')) || [];
+  document.querySelectorAll('.winner-select').forEach(select => {
+    const match = select.dataset.match;
+    const choice = select.value;
+    const pair = pairs.find(p => p.match === match);
+    if (choice === 'Team A') pair.winner = pair.teamA;
+    else if (choice === 'Team B') pair.winner = pair.teamB;
+    else pair.winner = "";
+  });
+  localStorage.setItem('quarterfinalPairs', JSON.stringify(pairs));
+  const winners = pairs.filter(p => p.winner).map(p => p.winner);
+  if (winners.length === 4) {
+    localStorage.setItem('semifinalTeams', JSON.stringify(winners));
+    alert('Sieger gespeichert! Halbfinale ist bereit.');
+  } else alert('Bitte alle Sieger auswählen!');
+}
+
+function resetPairs() {
+  localStorage.removeItem('quarterfinalPairs');
+  localStorage.removeItem('semifinalTeams');
+  document.querySelector('#pairs tbody').innerHTML = '';
+  alert('Paarungen zurückgesetzt.');
+}
+
+document.addEventListener('DOMContentLoaded', loadQuarterfinalTeams);
+</script>
+</body>
+</html>

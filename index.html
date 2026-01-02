@@ -1,0 +1,239 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Watt-Turnier Anmeldung</title>
+
+<!-- PWA Manifest -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#3656A7">
+
+<!-- Service Worker Registrierung -->
+<script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("service-worker.js")
+      .then(() => console.log("Service Worker registriert"))
+      .catch(err => console.error("SW Fehler:", err));
+  }
+</script>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        text-align: center;
+    }
+    h1 {
+        margin-bottom: 20px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    table, th, td {
+        border: 1px solid #000;
+    }
+    th, td {
+        padding: 8px;
+        text-align: center;
+    }
+    th {
+        background-color: #3656A7;
+        color: white;
+    }
+    td {
+        background-color: #ADD8E6;
+    }
+    button {
+        margin: 5px;
+        padding: 10px;
+        background-color: #3656A7;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        border-radius: 4px;
+    }
+    button:hover {
+        background-color: #2a4485;
+    }
+    .navigation-button {
+        margin: 10px 0;
+    }
+    .form-container {
+        border: 2px solid #3656A7;
+        padding: 15px;
+        margin: 20px auto;
+        width: 90%;
+        max-width: 400px;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+        text-align: center;
+    }
+    .form-container h3 {
+        color: #3656A7;
+        margin-bottom: 10px;
+    }
+    .form-container input[type="text"] {
+        width: 80%;
+        padding: 8px;
+        margin-bottom: 10px;
+        font-size: 16px;
+    }
+    @media (max-width: 600px) {
+        .form-container {
+            width: 95%;
+        }
+        table {
+            font-size: 14px;
+        }
+    }
+</style>
+</head>
+<body>
+<h1>Anmeldung für das Watt-Turnier</h1>
+
+<section>
+    <h2>Turnierdetails</h2>
+    <p><strong>Datum:</strong> <input id="tournament-date" onchange="saveTournamentDetails()" /></p>
+    <p><strong>Ort:</strong> <input id="tournament-location" onchange="saveTournamentDetails()" /></p>
+    <p><strong>Startgeld:</strong> <input id="tournament-fee" onchange="saveTournamentDetails()" /></p>
+</section>
+
+<!-- Navigation -->
+<a href="vorrunde.html"><button class="navigation-button">Zur Vorrunde</button></a>
+
+<!-- Komfortables Eingabeformular -->
+<div class="form-container">
+    <h3>Neues Team hinzufügen</h3>
+    <input type="text" id="player1" placeholder="Spieler 1">
+    <input type="text" id="player2" placeholder="Spieler 2">
+    <button onclick="addTeamFromForm()">➕ Team hinzufügen</button>
+</div>
+
+<button onclick="deleteAllTeams()" style="background-color:#B22222;">⚠ Alle Teams & Turnierdaten löschen</button>
+
+<table id="team-table">
+    <thead>
+        <tr><th>#</th><th>Spieler 1</th><th>Spieler 2</th><th>Bezahlt</th><th>Aktionen</th></tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<script>
+function saveTournamentDetails() {
+    const details = {
+        date: document.getElementById('tournament-date').value,
+        location: document.getElementById('tournament-location').value,
+        fee: document.getElementById('tournament-fee').value
+    };
+    localStorage.setItem('wattTournamentDetails', JSON.stringify(details));
+}
+
+function loadTournamentDetails() {
+    const saved = JSON.parse(localStorage.getItem('wattTournamentDetails'));
+    if (saved) {
+        document.getElementById('tournament-date').value = saved.date;
+        document.getElementById('tournament-location').value = saved.location;
+        document.getElementById('tournament-fee').value = saved.fee;
+    } else {
+        document.getElementById('tournament-date').value = "14. Juni 2025";
+        document.getElementById('tournament-location').value = "Albert-Kaindl-Sportheim";
+        document.getElementById('tournament-fee').value = "10€ pro Teilnehmer";
+    }
+}
+
+function addTeamFromForm() {
+    const player1 = document.getElementById('player1').value.trim();
+    const player2 = document.getElementById('player2').value.trim();
+    if (!player1 || !player2) {
+        alert("Bitte beide Spielernamen eingeben!");
+        return;
+    }
+    const table = document.querySelector('#team-table tbody');
+    const row = table.insertRow();
+    row.insertCell(0).textContent = table.rows.length + 1;
+    row.insertCell(1).innerHTML = `<input type="text" value="${player1}" oninput="updateLocalStorage()">`;
+    row.insertCell(2).innerHTML = `<input type="text" value="${player2}" oninput="updateLocalStorage()">`;
+    row.insertCell(3).innerHTML = `<input type="checkbox" onchange="updateLocalStorage()">`;
+    row.insertCell(4).innerHTML = `<button onclick="deleteTeam(this)">Löschen</button>`;
+    document.getElementById('player1').value = '';
+    document.getElementById('player2').value = '';
+    document.getElementById('player1').focus();
+    updateLocalStorage();
+}
+
+function deleteTeam(button) {
+    button.closest('tr').remove();
+    updateLocalStorage();
+}
+
+function deleteAllTeams() {
+    if (confirm("Möchtest du wirklich alle Teams und Turnierdaten löschen?")) {
+        document.querySelector('#team-table tbody').innerHTML = '';
+        localStorage.removeItem('wattTeams');
+        localStorage.removeItem('quarterfinalPairs');
+        localStorage.removeItem('semifinalTeams');
+        localStorage.removeItem('semifinalPairs');
+        localStorage.removeItem('finalTeams');
+        localStorage.removeItem('thirdPlaceTeams');
+        localStorage.removeItem('tournamentWinner');
+        localStorage.removeItem('runnerUp');
+        localStorage.removeItem('thirdPlaceWinner');
+        localStorage.removeItem('fourthPlace');
+        alert("Alle Teams und Turnierdaten wurden gelöscht!");
+    }
+}
+
+// ✅ Vorrunden-Daten beibehalten
+function updateLocalStorage() {
+    const rows = document.querySelectorAll('#team-table tbody tr');
+    const teams = [];
+    const existingTeams = JSON.parse(localStorage.getItem('wattTeams')) || [];
+
+    rows.forEach((row, i) => {
+        const player1 = row.cells[1].querySelector('input').value;
+        const player2 = row.cells[2].querySelector('input').value;
+        const paid = row.cells[3].querySelector('input').checked;
+
+        const existingTeam = existingTeams.find(t => t.player1 === player1 && t.player2 === player2);
+        const rounds = existingTeam ? existingTeam.rounds : Array(5).fill({ points: 0, goals: 0 });
+
+        if (player1 && player2) teams.push({ player1, player2, paid, rounds });
+        row.cells[0].textContent = i + 1;
+    });
+
+    localStorage.setItem('wattTeams', JSON.stringify(teams));
+}
+
+function loadTeams() {
+    const teams = JSON.parse(localStorage.getItem('wattTeams')) || [];
+    const table = document.querySelector('#team-table tbody');
+    teams.forEach((team, i) => {
+        const row = table.insertRow();
+        row.insertCell(0).textContent = i + 1;
+        row.insertCell(1).innerHTML = `<input type="text" value="${team.player1}" oninput="updateLocalStorage()">`;
+        row.insertCell(2).innerHTML = `<input type="text" value="${team.player2}" oninput="updateLocalStorage()">`;
+        row.insertCell(3).innerHTML = `<input type="checkbox" ${team.paid ? 'checked' : ''} onchange="updateLocalStorage()">`;
+        row.insertCell(4).innerHTML = `<button onclick="deleteTeam(this)">Löschen</button>`;
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadTournamentDetails();
+    loadTeams();
+    document.getElementById('player1').focus();
+
+    document.getElementById('player2').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            addTeamFromForm();
+        }
+    });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auslosung 2</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .button {
+            margin: 10px 0;
+            padding: 5px 10px;
+            background-color: #3656A7;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #3656A7;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #000;
+        }
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #3656A7;
+            color: white;
+        }
+        td {
+            background-color: #f2f2f2;
+        }
+        #draw-result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Auslosung 2</h1>
+    <button class="button" onclick="generateDraw()">Auslosung</button>
+    <button class="button" onclick="window.location.href='vorrunde_funktioniert_10.06.html'">Zur Vorrunde</button>
+    <button class="button" onclick="resetDraw()">Reset Auslosung</button>
+
+    <div id="draw-result">
+        <!-- Hier wird die Auslosung angezeigt -->
+    </div>
+
+    <script>
+        const previousDraw = localStorage.getItem('auslosung2') || null;
+        const existingMatches = JSON.parse(localStorage.getItem('matches')) || [];
+        const teamsFromStorage = JSON.parse(localStorage.getItem('wattTeams')) || []; // Teams aus Vorrunde laden
+
+        // Funktion für die Auslosung
+        function generateDraw() {
+            // Sicherstellen, dass es genug Teams gibt (mindestens 2 Teams)
+            if (teamsFromStorage.length < 2) {
+                alert("Es müssen mindestens 2 Teams vorhanden sein, um eine Auslosung zu machen.");
+                return;
+            }
+
+            // Teams werden aus dem LocalStorage geladen
+            const teamNames = teamsFromStorage.map(team => `${team.player1} / ${team.player2}`);
+            
+            // Mischen der Teams
+            const shuffledTeams = shuffleArray(teamNames);
+
+            // Erstelle die Auslosung als Tabelle
+            let drawHTML = '<table><tr><th>Team 1</th><th>vs</th><th>Team 2</th><th>Tisch</th></tr>';
+            let currentMatches = [];
+
+            for (let i = 0; i < shuffledTeams.length; i += 2) {
+                const match = `${shuffledTeams[i]} vs ${shuffledTeams[i + 1]}`;
+                
+                // Überprüfen, ob die Paarung schon existiert
+                if (existingMatches.includes(match)) {
+                    alert(`Die Paarung "${match}" existiert bereits. Versuche es mit einer neuen Auslosung.`);
+                    return;
+                }
+
+                currentMatches.push(match);
+                drawHTML += `<tr><td>${shuffledTeams[i]}</td><td>vs</td><td>${shuffledTeams[i + 1]}</td><td>Tisch ${Math.ceil(i / 2) + 1}</td></tr>`;
+            }
+            drawHTML += '</table>';
+
+            // Speichern der neuen Auslosung
+            localStorage.setItem('auslosung2', drawHTML);
+
+            // Speichern der aktuellen Paarungen
+            localStorage.setItem('matches', JSON.stringify([...existingMatches, ...currentMatches]));
+
+            // Zeige die Auslosung auf der Seite
+            document.getElementById('draw-result').innerHTML = drawHTML;
+        }
+
+        // Funktion, um das Array zu mischen (Fisher-Yates Shuffle)
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // Lade die gespeicherte Auslosung, wenn sie existiert
+        document.addEventListener('DOMContentLoaded', () => {
+            if (previousDraw) {
+                document.getElementById('draw-result').innerHTML = previousDraw;
+            }
+        });
+
+        // Funktion, um die Auslosung zurückzusetzen
+        function resetDraw() {
+            localStorage.removeItem('auslosung2');
+            localStorage.removeItem('matches');
+            document.getElementById('draw-result').innerHTML = '';
+            alert("Die Auslosung wurde zurückgesetzt.");
+        }
+    </script>
+</body>
+</html>

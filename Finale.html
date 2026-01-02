@@ -1,0 +1,178 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Watt-Turnier Finale & Platz 3</title>
+<style>
+body { font-family: Arial, sans-serif; margin: 20px; }
+table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+table, th, td { border: 1px solid #000; }
+th, td { padding: 8px; text-align: center; }
+th { background-color: #3656A7; color: white; }
+button { margin: 10px 5px; padding: 8px 12px; background-color: #3656A7; color: white; border: none; cursor: pointer; }
+button:hover { background-color: #2a4485; }
+select { width: 100%; }
+h2 { margin-top: 30px; }
+.gold { background-color: #FFD700; }   /* Gold */
+.silver { background-color: #C0C0C0; } /* Silber */
+.bronze { background-color: #CD7F32; } /* Bronze */
+</style>
+</head>
+<body>
+<h1>Finale & Spiel um Platz 3</h1>
+
+<!-- Navigation -->
+<a href="halbfinale.html"><button>Zurück zum Halbfinale</button></a>
+<button onclick="saveResults()">Sieger speichern</button>
+
+<!-- Finale -->
+<h2>Finale</h2>
+<table id="final">
+<colgroup>
+  <col style="width:20%">
+  <col style="width:30%">
+  <col style="width:30%">
+  <col style="width:20%">
+</colgroup>
+<thead><tr><th>Match</th><th>Team A</th><th>Team B</th><th>Sieger</th></tr></thead>
+<tbody></tbody>
+</table>
+
+<!-- Platz 3 -->
+<h2>Spiel um Platz 3</h2>
+<table id="thirdPlace">
+<colgroup>
+  <col style="width:20%">
+  <col style="width:30%">
+  <col style="width:30%">
+  <col style="width:20%">
+</colgroup>
+<thead><tr><th>Match</th><th>Team A</th><th>Team B</th><th>Sieger</th></tr></thead>
+<tbody></tbody>
+</table>
+
+<!-- Rangliste -->
+<h2>Endergebnis</h2>
+<table id="ranking" style="display:none;">
+<colgroup>
+  <col style="width:20%">
+  <col style="width:80%">
+</colgroup>
+<thead><tr><th>Platz</th><th>Mannschaft</th></tr></thead>
+<tbody></tbody>
+</table>
+
+<script>
+function loadMatches() {
+  const finalTeams = JSON.parse(localStorage.getItem('finalTeams')) || [];
+  const thirdPlaceTeams = JSON.parse(localStorage.getItem('thirdPlaceTeams')) || [];
+
+  if (finalTeams.length !== 2 || thirdPlaceTeams.length !== 2) {
+    alert('Keine Daten gefunden! Bitte zuerst Halbfinale abschließen.');
+    return;
+  }
+
+  // Finale anzeigen
+  const finalRow = document.querySelector('#final tbody');
+  finalRow.innerHTML = '';
+  const rowF = finalRow.insertRow();
+  rowF.insertCell(0).textContent = 'Finale';
+  rowF.insertCell(1).textContent = finalTeams[0];
+  rowF.insertCell(2).textContent = finalTeams[1];
+  const selectF = document.createElement('select');
+  selectF.className = 'winner-select';
+  selectF.dataset.match = 'Finale';
+  selectF.innerHTML = `<option value="">Sieger wählen</option>
+                       <option value="Team A">Team A</option>
+                       <option value="Team B">Team B</option>`;
+  rowF.insertCell(3).appendChild(selectF);
+
+  // Spiel um Platz 3 anzeigen
+  const thirdRow = document.querySelector('#thirdPlace tbody');
+  thirdRow.innerHTML = '';
+  const rowT = thirdRow.insertRow();
+  rowT.insertCell(0).textContent = 'Platz 3';
+  rowT.insertCell(1).textContent = thirdPlaceTeams[0];
+  rowT.insertCell(2).textContent = thirdPlaceTeams[1];
+  const selectT = document.createElement('select');
+  selectT.className = 'winner-select';
+  selectT.dataset.match = 'Platz 3';
+  selectT.innerHTML = `<option value="">Sieger wählen</option>
+                       <option value="Team A">Team A</option>
+                       <option value="Team B">Team B</option>`;
+  rowT.insertCell(3).appendChild(selectT);
+
+  // Falls bereits gespeicherte Sieger existieren, Auswahl setzen
+  const savedWinner = localStorage.getItem('tournamentWinner');
+  const savedRunnerUp = localStorage.getItem('runnerUp');
+  const savedThird = localStorage.getItem('thirdPlaceWinner');
+  const savedFourth = localStorage.getItem('fourthPlace');
+
+  if (savedWinner && savedRunnerUp && savedThird && savedFourth) {
+    // Auswahl für Finale
+    selectF.value = (savedWinner === finalTeams[0]) ? 'Team A' : 'Team B';
+    // Auswahl für Platz 3
+    selectT.value = (savedThird === thirdPlaceTeams[0]) ? 'Team A' : 'Team B';
+    // Rangliste anzeigen
+    displayRanking([savedWinner, savedRunnerUp, savedThird, savedFourth]);
+  }
+}
+
+function saveResults() {
+  const finalTeams = JSON.parse(localStorage.getItem('finalTeams')) || [];
+  const thirdTeams = JSON.parse(localStorage.getItem('thirdPlaceTeams')) || [];
+  let tournamentWinner = '';
+  let runnerUp = '';
+  let thirdPlaceWinner = '';
+  let fourthPlace = '';
+
+  document.querySelectorAll('.winner-select').forEach(select => {
+    const match = select.dataset.match;
+    const choice = select.value;
+    if (match === 'Finale') {
+      tournamentWinner = (choice === 'Team A') ? finalTeams[0] : (choice === 'Team B') ? finalTeams[1] : '';
+      runnerUp = (choice === 'Team A') ? finalTeams[1] : (choice === 'Team B') ? finalTeams[0] : '';
+    } else if (match === 'Platz 3') {
+      thirdPlaceWinner = (choice === 'Team A') ? thirdTeams[0] : (choice === 'Team B') ? thirdTeams[1] : '';
+      fourthPlace = (choice === 'Team A') ? thirdTeams[1] : (choice === 'Team B') ? thirdTeams[0] : '';
+    }
+  });
+
+  if (tournamentWinner && runnerUp && thirdPlaceWinner && fourthPlace) {
+    // Ergebnisse speichern
+    localStorage.setItem('tournamentWinner', tournamentWinner);
+    localStorage.setItem('runnerUp', runnerUp);
+    localStorage.setItem('thirdPlaceWinner', thirdPlaceWinner);
+    localStorage.setItem('fourthPlace', fourthPlace);
+
+    // Rangliste anzeigen
+    displayRanking([tournamentWinner, runnerUp, thirdPlaceWinner, fourthPlace]);
+  } else {
+    alert('Bitte beide Sieger auswählen!');
+  }
+}
+
+function displayRanking(teams) {
+  const rankingTable = document.querySelector('#ranking');
+  rankingTable.style.display = 'table';
+  const tbody = rankingTable.querySelector('tbody');
+  tbody.innerHTML = '';
+
+  teams.forEach((team, index) => {
+    const row = tbody.insertRow();
+    row.insertCell(0).textContent = `${index + 1}. Platz`;
+    row.insertCell(1).textContent = team;
+
+    // Farben für Platzierungen
+    if (index === 0) row.classList.add('gold');
+    else if (index === 1) row.classList.add('silver');
+    else if (index === 2) row.classList.add('bronze');
+  });
+}
+
+document.addEventListener('DOMContentLoaded', loadMatches);
+</script>
+</body>
+</html>

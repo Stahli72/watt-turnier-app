@@ -1,0 +1,101 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Watt-Turnier Halbfinale</title>
+<style>
+body { font-family: Arial, sans-serif; margin: 20px; }
+table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+table, th, td { border: 1px solid #000; }
+th, td { padding: 8px; text-align: center; }
+th { background-color: #3656A7; color: white; }
+button { margin: 10px 5px; padding: 8px 12px; background-color: #3656A7; color: white; border: none; cursor: pointer; }
+button:hover { background-color: #2a4485; }
+select { width: 100%; }
+</style>
+</head>
+<body>
+<h1>Halbfinale</h1>
+
+<a href="viertelfinale.html"><button>Zurück zum Viertelfinale</button></a>
+<button onclick="saveFinalists()">Sieger speichern</button>
+<a href="finale.html"><button>Zur Finalseite</button></a>
+
+<table id="semifinal">
+<thead><tr><th>Match</th><th>Team A</th><th>Team B</th><th>Sieger</th></tr></thead>
+<tbody></tbody>
+</table>
+
+<script>
+function loadSemifinalTeams() {
+  let pairs = JSON.parse(localStorage.getItem('semifinalPairs')) || [];
+
+  if (pairs.length === 0) {
+    const teams = JSON.parse(localStorage.getItem('semifinalTeams')) || [];
+    if (teams.length !== 4) {
+      alert('Keine Halbfinal-Teams gefunden! Bitte zuerst Viertelfinale abschließen.');
+      return;
+    }
+    pairs = [
+      { match: 'Halbfinale 1', teamA: teams[0], teamB: teams[3], winner: "" },
+      { match: 'Halbfinale 2', teamA: teams[1], teamB: teams[2], winner: "" }
+    ];
+    localStorage.setItem('semifinalPairs', JSON.stringify(pairs));
+  }
+
+  displayPairs(pairs);
+}
+
+function displayPairs(pairs) {
+  const tbody = document.querySelector('#semifinal tbody');
+  tbody.innerHTML = '';
+  pairs.forEach(pair => {
+    const row = tbody.insertRow();
+    row.insertCell(0).textContent = pair.match;
+    row.insertCell(1).textContent = pair.teamA;
+    row.insertCell(2).textContent = pair.teamB;
+
+    const selectCell = row.insertCell(3);
+    const select = document.createElement('select');
+    select.className = 'winner-select';
+    select.dataset.match = pair.match;
+    select.innerHTML = `<option value="">Sieger wählen</option>
+                        <option value="Team A">Team A</option>
+                        <option value="Team B">Team B</option>`;
+    if (pair.winner) {
+      select.value = (pair.winner === pair.teamA) ? 'Team A' : 'Team B';
+    }
+    selectCell.appendChild(select);
+  });
+}
+
+function saveFinalists() {
+  const pairs = JSON.parse(localStorage.getItem('semifinalPairs')) || [];
+  document.querySelectorAll('.winner-select').forEach(select => {
+    const match = select.dataset.match;
+    const choice = select.value;
+    const pair = pairs.find(p => p.match === match);
+    if (choice === 'Team A') pair.winner = pair.teamA;
+    else if (choice === 'Team B') pair.winner = pair.teamB;
+  });
+
+  localStorage.setItem('semifinalPairs', JSON.stringify(pairs));
+
+  const finalists = pairs.filter(p => p.winner).map(p => p.winner);
+  const losers = pairs.map(p => (p.winner === p.teamA ? p.teamB : p.teamA));
+
+  if (finalists.length === 2) {
+    localStorage.setItem('finalTeams', JSON.stringify(finalists));
+    localStorage.setItem('thirdPlaceTeams', JSON.stringify(losers));
+    alert('Finalisten und Teams für Platz 3 gespeichert! Finale ist bereit.');
+  } else {
+    alert('Bitte beide Sieger auswählen!');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', loadSemifinalTeams);
+</script>
+</body>
+</html>
