@@ -1,110 +1,116 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Watt-Turnier Vorrunde</title>
-    <style>
-    .app-menu {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: #fff;
-        display: flex;
-        justify-content: space-around;
-        padding: 10px 0;
-        border-top: 1px solid #ccc;
-        z-index: 999999;
-    }
-    .app-menu a {
-        text-align: center;
-        font-size: 14px;
-        text-decoration: none;
-        color: black;
-    }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watt-Turnier Vorrunde</title>
 
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-    }
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        table-layout: fixed;
-    }
-    table, th, td {
-        border: 1px solid #000;
-    }
-    th, td {
-        padding: 6px;
-        text-align: center;
-        font-size: 14px;
-    }
-    th {
-        background-color: #3656A7;
-        color: white;
-        position: sticky;
-        top: 0;
-        z-index: 2;
-    }
-    input {
-        width: 100%;
-        box-sizing: border-box;
-        text-align: center;
-    }
-    .sort-button, .navigation-button, .export-button {
-        margin: 10px 5px;
-        padding: 8px 12px;
-        background-color: #3656A7;
-        color: white;
-        border: none;
-        cursor: pointer;
-        border-radius: 4px;
-    }
-    .sort-button:hover, .navigation-button:hover, .export-button:hover {
-        background-color: #2a4485;
-    }
-    #searchTeam {
-        margin: 10px 0;
-        padding: 8px;
-        width: 250px;
-        font-size: 16px;
-    }
-    /* ✅ Fett für Gesamt Total */
-    .overall-total {
-        font-weight: bold;
-    }
-    /* ✅ Dickere Rahmen für Runden-Spalten */
-    .round-border {
-        border-left: 3px solid #000;
-        border-right: 3px solid #000;
-    }
-    /* ✅ Hintergrundfarben für jede Runde */
-    .round1 { background-color: #E6F7FF; } /* Hellblau */
-    .round2 { background-color: #FFF2CC; } /* Hellgelb */
-    .round3 { background-color: #E2F0D9; } /* Hellgrün */
-    .round4 { background-color: #FCE4D6; } /* Hellorange */
-    .round5 { background-color: #F4CCCC; } /* Hellrot */
-    @media (max-width: 768px) {
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
         table {
-            font-size: 12px;
-        }
-        #searchTeam {
             width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
         }
-    }
-</style>
+
+        table, th, td {
+            border: 1px solid #000;
+        }
+
+        th, td {
+            padding: 6px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #3656A7;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .sort-button, .navigation-button, .export-button {
+            margin: 10px 5px;
+            padding: 8px 12px;
+            background-color: #3656A7;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .sort-button:hover, .navigation-button:hover, .export-button:hover {
+            background-color: #2a4485;
+        }
+
+        #searchTeam {
+            margin: 10px 0;
+            padding: 8px;
+            width: 250px;
+            font-size: 16px;
+        }
+
+        .overall-total {
+            font-weight: bold;
+        }
+
+        .round-border {
+            border-left: 3px solid #000;
+            border-right: 3px solid #000;
+        }
+
+        .round1 { background-color: #E6F7FF; }
+        .round2 { background-color: #FFF2CC; }
+        .round3 { background-color: #E2F0D9; }
+        .round4 { background-color: #FCE4D6; }
+        .round5 { background-color: #F4CCCC; }
+
+        @media (max-width: 768px) {
+            table { font-size: 12px; }
+            #searchTeam { width: 100%; }
+        }
+
+        /* ✅ Menüleiste */
+        .app-menu {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #fff;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 1px solid #ccc;
+            z-index: 999999;
+        }
+
+        .app-menu a {
+            text-align: center;
+            font-size: 14px;
+            text-decoration: none;
+            color: black;
+        }
+    </style>
 </head>
+
 <body>
+
 <h1>Vorrunde Tabelle</h1>
 
 <input type="text" id="searchTeam" placeholder="Mannschaft suchen..." oninput="filterTeams()">
 
-<!-- Navigation -->
 <a href="Anmeldung.html"><button class="navigation-button">Zur Anmeldung</button></a>
 <button class="sort-button" onclick="sortTeams()">Sortieren jetzt</button>
 <a href="auslosung1_10.06.html"><button class="navigation-button">Zur Auslosung 1</button></a>
@@ -113,21 +119,10 @@
 <a href="auslosung4_10.06.html"><button class="navigation-button">Zur Auslosung 4</button></a>
 <a href="auslosung5_10.06.html"><button class="navigation-button">Zur Auslosung 5</button></a>
 <a href="viertelfinale.html"><button class="navigation-button">Zum Viertelfinale</button></a>
+
 <button class="export-button" onclick="exportToExcel()">📤 Export als XLSX</button>
 
-<!-- Tabelle -->
 <table id="preliminary-round">
-    <colgroup>
-        <col style="width:5%">      <!-- Platz -->
-        <col style="width:15%">     <!-- Mannschaft -->
-        <col class="round-border" style="width:4%" span="2"> <!-- Ru 1 -->
-        <col class="round-border" style="width:4%" span="2"> <!-- Ru 2 -->
-        <col class="round-border" style="width:4%" span="2"> <!-- Ru 3 -->
-        <col class="round-border" style="width:4%" span="2"> <!-- Ru 4 -->
-        <col class="round-border" style="width:4%" span="2"> <!-- Ru 5 -->
-        <col style="width:5%" span="2">  <!-- Gesamt Punkte/Tore -->
-        <col style="width:10%">     <!-- Gesamt Total -->
-    </colgroup>
     <thead>
         <tr>
             <th>Platz</th>
@@ -155,10 +150,13 @@
     <tbody></tbody>
 </table>
 
-<!-- SheetJS für XLSX Export -->
 <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 
 <script>
+/* --- dein kompletter JS-Code unverändert --- */
+document.addEventListener('DOMContentLoaded', loadTeamsFromLocalStorage);
+document.addEventListener('input', calculateTotals);
+
 function loadTeamsFromLocalStorage() {
     const teams = JSON.parse(localStorage.getItem('wattTeams')) || [];
     const tbody = document.querySelector('#preliminary-round tbody');
@@ -173,6 +171,7 @@ function loadTeamsFromLocalStorage() {
             const points = team.rounds?.[i]?.points ?? '';
             const goals = team.rounds?.[i]?.goals ?? '';
             const roundClass = `round${i+1}`;
+
             row.insertCell(-1).innerHTML = `<input type="number" class="points ${roundClass}" data-round="${i}" value="${points}">`;
             row.insertCell(-1).innerHTML = `<input type="number" class="goals ${roundClass}" data-round="${i}" value="${goals}">`;
         }
@@ -221,6 +220,7 @@ function calculateTotals() {
         row.querySelectorAll('.points').forEach(input => {
             totalPoints += parseInt(input.value) || 0;
         });
+
         row.querySelectorAll('.goals').forEach(input => {
             totalGoals += parseInt(input.value) || 0;
         });
@@ -260,32 +260,43 @@ function sortTeams() {
 
 function filterTeams() {
     const searchValue = document.getElementById('searchTeam').value.toLowerCase();
+
     document.querySelectorAll('#preliminary-round tbody tr').forEach(row => {
         const teamName = row.cells[1].textContent.toLowerCase();
         row.style.display = teamName.includes(searchValue) ? '' : 'none';
     });
 }
 
-// ✅ Export als XLSX
 function exportToExcel() {
     const wb = XLSX.utils.book_new();
     const ws_data = [];
+
     const headers = [
         "Platz", "Mannschaften",
-        "Ru1 P", "Ru1 T", "Ru2 P", "Ru2 T", "Ru3 P", "Ru3 T", "Ru4 P", "Ru4 T", "Ru5 P", "Ru5 T",
-        "Ges P", "Ges T", "Gesamt Total"
+        "Ru1 P", "Ru1 T",
+        "Ru2 P", "Ru2 T",
+        "Ru3 P", "Ru3 T",
+        "Ru4 P", "Ru4 T",
+        "Ru5 P", "Ru5 T",
+        "Ges P", "Ges T",
+        "Gesamt Total"
     ];
+
     ws_data.push(headers);
 
     document.querySelectorAll('#preliminary-round tbody tr').forEach(row => {
         const rowData = [];
-        rowData.push(row.cells[0].textContent); // Platz
-        rowData.push(row.cells[1].textContent); // Mannschaft
+
+        rowData.push(row.cells[0].textContent);
+        rowData.push(row.cells[1].textContent);
+
         row.querySelectorAll('.points').forEach(input => rowData.push(input.value));
         row.querySelectorAll('.goals').forEach(input => rowData.push(input.value));
+
         rowData.push(row.querySelector('.total-points').value);
         rowData.push(row.querySelector('.total-goals').value);
         rowData.push(row.querySelector('.overall-total').value);
+
         ws_data.push(rowData);
     });
 
@@ -293,11 +304,9 @@ function exportToExcel() {
     XLSX.utils.book_append_sheet(wb, ws, "Vorrunde");
     XLSX.writeFile(wb, "Vorrunde.xlsx");
 }
-
-document.addEventListener('input', calculateTotals);
-document.addEventListener('DOMContentLoaded', loadTeamsFromLocalStorage);
-    
 </script>
+
+<!-- ✅ Menüleiste – jetzt korrekt eingebaut -->
 <nav class="app-menu">
     <a href="index.html">🏠<br>Anmeldung</a>
     <a href="vorrunde.html">📋<br>Vorrunde</a>
@@ -313,9 +322,3 @@ document.addEventListener('DOMContentLoaded', loadTeamsFromLocalStorage);
 
 </body>
 </html>
-
-
-
-
-
-
