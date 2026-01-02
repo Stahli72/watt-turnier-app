@@ -2,6 +2,16 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
+  <script>
+  const correctPassword = "SSVKöfering1926";  // Passwort hier ändern
+
+  const userPassword = prompt("Bitte Passwort eingeben:");
+
+  if (userPassword !== correctPassword) {
+    document.body.innerHTML = "<h2>Zugriff verweigert</h2>";
+  }
+</script>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Watt-Turnier Anmeldung</title>
@@ -270,4 +280,5 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+
 
