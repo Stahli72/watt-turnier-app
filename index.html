@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -7,7 +8,7 @@
 <title>Watt-Turnier Anmeldung</title>
 
 <!-- PWA Manifest -->
-<link rel="manifest" href="manifest.json">
+manifest.json
 <meta name="theme-color" content="#3656A7">
 
 <!-- Service Worker Registrierung -->
@@ -83,6 +84,34 @@
         margin-bottom: 10px;
         font-size: 16px;
     }
+    /* ✅ Menüleiste */
+    .app-menu {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-color: #3656A7;
+        display: flex;
+        justify-content: space-around;
+        padding: 10px 0;
+        border-top: 2px solid #2a4485;
+        z-index: 1000;
+    }
+    .app-menu a {
+        color: white;
+        text-decoration: none;
+        font-size: 14px;
+        text-align: center;
+        flex: 1;
+    }
+    .app-menu a:hover {
+        background-color: #2a4485;
+        padding: 8px;
+        border-radius: 4px;
+    }
+    body {
+        margin-bottom: 60px; /* Platz für die Menüleiste */
+    }
     @media (max-width: 600px) {
         .form-container {
             width: 95%;
@@ -103,9 +132,6 @@
     <p><strong>Startgeld:</strong> <input id="tournament-fee" onchange="saveTournamentDetails()" /></p>
 </section>
 
-<!-- Navigation -->
-<a href="vorrunde.html"><button class="navigation-button">Zur Vorrunde</button></a>
-
 <!-- Komfortables Eingabeformular -->
 <div class="form-container">
     <h3>Neues Team hinzufügen</h3>
@@ -122,6 +148,20 @@
     </thead>
     <tbody></tbody>
 </table>
+
+<!-- ✅ Menüleiste -->
+<nav class="app-menu">
+    index.html🏠 Anmeldung</a>
+    vorrunde.html📋 Vorrunde</a>
+    auslosung1.html🎲 Auslosung 1</a>
+    auslosung2.html🎲 Auslosung 2</a>
+    auslosung3.html🎲 Auslosung 3</a>
+    auslosung4.html🎲 Auslosung 4</a>
+    auslosung5.html🎲 Auslosung 5</a>
+    viertelfinale.html🏆 Viertelfinale</a>
+    halbfinale.html🥈 Halbfinale</a>
+    finale.html🥇 Finale</a>
+</nav>
 
 <script>
 function saveTournamentDetails() {
@@ -188,7 +228,6 @@ function deleteAllTeams() {
     }
 }
 
-// ✅ Vorrunden-Daten beibehalten
 function updateLocalStorage() {
     const rows = document.querySelectorAll('#team-table tbody tr');
     const teams = [];
