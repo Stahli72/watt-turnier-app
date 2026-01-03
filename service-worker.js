@@ -1,4 +1,9 @@
-// Sofort aktiv werden (update 1)
+// ------------------------------------------------------
+// Version deiner App (nur hier ändern!)
+// ------------------------------------------------------
+const APP_VERSION = "1.0.0";
+
+// Sofort aktiv werden
 self.addEventListener("install", event => {
   self.skipWaiting();
 });
@@ -13,5 +18,15 @@ self.addEventListener("fetch", event => {
   event.respondWith(fetch(event.request));
 });
 
-// Kleine Änderung, um ein Update zu erzwingen
-console.log("Service Worker Version 1.1 geladen");
+// Webseite fragt nach der Version → Service Worker antwortet
+self.addEventListener("message", event => {
+  if (event.data && event.data.type === "GET_VERSION") {
+    event.source.postMessage({
+      type: "VERSION",
+      version: APP_VERSION
+    });
+  }
+});
+
+// Debug-Ausgabe
+console.log("Service Worker Version:", APP_VERSION);
