@@ -1,414 +1,128 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<script>
-  const correctPassword = "SSVKöfering1926";
-  const userPassword = prompt("Bitte Passwort eingeben:");
-
-  if (userPassword !== correctPassword) {
-    window.onload = () => {
-      document.body.innerHTML = "<h2>Zugriff verweigert</h2>";
-    };
-  }
-</script>
-
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Watt-Turnier Anmeldung</title>
-
-<!-- PWA Manifest -->
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#3656A7">
-
-<!-- Service Worker Registrierung -->
-<script>
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("service-worker.js")
-      .then(() => console.log("Service Worker registriert"))
-      .catch(err => console.error("SW Fehler:", err));
-  }
-</script>
-
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-        text-align: center;
-        margin-bottom: 80px; /* Platz für die Menüleiste */
-    }
-    h1 {
-        margin-bottom: 20px;
-    }
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-    }
-    table, th, td {
-        border: 1px solid #000;
-    }
-    th, td {
-        padding: 8px;
-        text-align: center;
-    }
-    th {
-        background-color: #3656A7;
-        color: white;
-    }
-    td {
-        background-color: #ADD8E6;
-    }
-    button {
-        margin: 5px;
-        padding: 10px;
-        background-color: #3656A7;
-        color: white;
-        border: none;
-        cursor: pointer;
-        font-size: 16px;
-        border-radius: 4px;
-    }
-    button:hover {
-        background-color: #2a4485;
-    }
-    .form-container {
-        border: 2px solid #3656A7;
-        padding: 15px;
-        margin: 20px auto;
-        width: 90%;
-        max-width: 400px;
-        border-radius: 8px;
-        background-color: #f9f9f9;
-        text-align: center;
-    }
-    .form-container h3 {
-        color: #3656A7;
-        margin-bottom: 10px;
-    }
-    .form-container input[type="text"] {
-        width: 80%;
-        padding: 8px;
-        margin-bottom: 10px;
-        font-size: 16px;
-    }
-    /* ✅ Menüleiste */
-    .app-menu {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        background-color: #3656A7;
-        display: flex;
-        justify-content: space-around;
-        padding: 10px 0;
-        border-top: 2px solid #2a4485;
-        z-index: 1000;
-    }
-    .app-menu a {
-        color: white;
-        text-decoration: none;
-        font-size: 14px;
-        text-align: center;
-        flex: 1;
-    }
-    .app-menu a:hover {
-        background-color: #2a4485;
-        padding: 8px;
-        border-radius: 4px;
-    }
-    @media (max-width: 600px) {
-        .form-container {
-            width: 95%;
-        }
-        table {
-            font-size: 14px;
-        }
-    }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Watt-Turnier Anmeldung</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="manifest" href="manifest.json">
 </head>
+
 <body>
-<h1>Anmeldung für das Watt-Turnier</h1>
 
-<section>
-    <h2>Turnierdetails</h2>
-    <p><strong>Datum:</strong> <input id="tournament-date" onchange="saveTournamentDetails()" /></p>
-    <p><strong>Ort:</strong> <input id="tournament-location" onchange="saveTournamentDetails()" /></p>
-    <p><strong>Startgeld:</strong> <input id="tournament-fee" onchange="saveTournamentDetails()" /></p>
-</section>
+  <h1>Watt-Turnier Anmeldung</h1>
 
-<!-- Komfortables Eingabeformular -->
-<div class="form-container">
-    <h3>Neues Team hinzufügen</h3>
-    <input type="text" id="player1" placeholder="Spieler 1">
-    <input type="text" id="player2" placeholder="Spieler 2">
-    <button onclick="addTeamFromForm()">➕ Team hinzufügen</button>
-</div>
+  <div class="container">
+    <label for="teamname">Teamname:</label>
+    <input type="text" id="teamname" placeholder="Teamname eingeben">
 
-<button onclick="deleteAllTeams()" style="background-color:#B22222;">⚠ Alle Teams &amp; Turnierdaten löschen</button>
+    <label for="spieler1">Spieler 1:</label>
+    <input type="text" id="spieler1" placeholder="Name Spieler 1">
 
-<table id="team-table">
-    <thead>
-        <tr><th>#</th><th>Spieler 1</th><th>Spieler 2</th><th>Bezahlt</th><th>Aktionen</th></tr>
-    </thead>
-    <tbody></tbody>
-</table>
+    <label for="spieler2">Spieler 2:</label>
+    <input type="text" id="spieler2" placeholder="Name Spieler 2">
 
-<!-- ✅ Menüleiste -->
-<nav class="app-menu">
-    <a href="index.html">🏠<br>Anmeldung</a>
-    <a href="vorrunde.html">📋<br>Vorrunde</a>
-    <a href="auslosung1.html">🎲<br>Auslosung 1</a>
-    <a href="auslosung2.html">🎲<br>Auslosung 2</a>
-    <a href="auslosung3.html">🎲<br>Auslosung 3</a>
-    <a href="auslosung4.html">🎲<br>Auslosung 4</a>
-    <a href="auslosung5.html">🎲<br>Auslosung 5</a>
-    <a href="viertelfinale.html">🏆<br>Viertelfinale</a>
-    <a href="halbfinale.html">🥈<br>Halbfinale</a>
-    <a href="finale.html">🥇<br>Finale</a>
-</nav>
+    <button onclick="anmelden()">Anmelden</button>
+  </div>
 
-<script>
-function saveTournamentDetails() {
-    const details = {
-        date: document.getElementById('tournament-date').value,
-        location: document.getElementById('tournament-location').value,
-        fee: document.getElementById('tournament-fee').value
-    };
-    localStorage.setItem('wattTournamentDetails', JSON.stringify(details));
-}
+  <div class="menu">
+    <a href="vorrunde.html">Vorrunde</a>
+    <a href="auslosung1.html">Auslosung 1</a>
+    <a href="auslosung2.html">Auslosung 2</a>
+    <a href="auslosung3.html">Auslosung 3</a>
+    <a href="auslosung4.html">Auslosung 4</a>
+    <a href="auslosung5.html">Auslosung 5</a>
+    <a href="viertelfinale.html">Viertelfinale</a>
+    <a href="halbfinale.html">Halbfinale</a>
+    <a href="finale.html">Finale</a>
+  </div>
 
-function loadTournamentDetails() {
-    const saved = JSON.parse(localStorage.getItem('wattTournamentDetails'));
-    if (saved) {
-        document.getElementById('tournament-date').value = saved.date;
-        document.getElementById('tournament-location').value = saved.location;
-        document.getElementById('tournament-fee').value = saved.fee;
-    } else {
-        document.getElementById('tournament-date').value = "14. Juni 2025";
-        document.getElementById('tournament-location').value = "Albert-Kaindl-Sportheim";
-        document.getElementById('tournament-fee').value = "10€ pro Teilnehmer";
-    }
-}
+  <!-- Update-Banner -->
+  <div id="update-banner" 
+       style="
+         display:none;
+         position:fixed;
+         bottom:80px;
+         left:0;
+         right:0;
+         background:#3656A7;
+         color:white;
+         padding:15px;
+         text-align:center;
+         font-size:16px;
+         z-index:999999;
+       ">
+    Neue Version verfügbar – tippe hier zum Aktualisieren
+  </div>
 
-function addTeamFromForm() {
-    const player1 = document.getElementById('player1').value.trim();
-    const player2 = document.getElementById('player2').value.trim();
-    if (!player1 || !player2) {
-        alert("Bitte beide Spielernamen eingeben!");
-        return;
-    }
-    const table = document.querySelector('#team-table tbody');
-    const row = table.insertRow();
-    row.insertCell(0).textContent = table.rows.length + 1;
-    row.insertCell(1).innerHTML = `<input type="text" value="${player1}" oninput="updateLocalStorage()">`;
-    row.insertCell(2).innerHTML = `<input type="text" value="${player2}" oninput="updateLocalStorage()">`;
-    row.insertCell(3).innerHTML = `<input type="checkbox" onchange="updateLocalStorage()">`;
-    row.insertCell(4).innerHTML = `<button onclick="deleteTeam(this)">Löschen</button>`;
-    document.getElementById('player1').value = '';
-    document.getElementById('player2').value = '';
-    document.getElementById('player1').focus();
-    updateLocalStorage();
-}
+  <!-- Versionsanzeige -->
+  <div id="app-version" 
+       style="
+         position:fixed;
+         bottom:40px;
+         right:10px;
+         background:#eee;
+         padding:5px 10px;
+         border-radius:5px;
+         font-size:12px;
+         color:#333;
+         z-index:999999;
+       ">
+    Version lädt…
+  </div>
 
-function deleteTeam(button) {
-    button.closest('tr').remove();
-    updateLocalStorage();
-}
+  <script src="script.js"></script>
 
-function deleteAllTeams() {
-    if (confirm("Möchtest du wirklich alle Teams und Turnierdaten löschen?")) {
-        document.querySelector('#team-table tbody').innerHTML = '';
-        localStorage.removeItem('wattTeams');
-        localStorage.removeItem('quarterfinalPairs');
-        localStorage.removeItem('semifinalTeams');
-        localStorage.removeItem('semifinalPairs');
-        localStorage.removeItem('finalTeams');
-        localStorage.removeItem('thirdPlaceTeams');
-        localStorage.removeItem('tournamentWinner');
-        localStorage.removeItem('runnerUp');
-        localStorage.removeItem('thirdPlaceWinner');
-        localStorage.removeItem('fourthPlace');
-        alert("Alle Teams und Turnierdaten wurden gelöscht!");
-    }
-}
-
-function updateLocalStorage() {
-    const rows = document.querySelectorAll('#team-table tbody tr');
-    const teams = [];
-    const existingTeams = JSON.parse(localStorage.getItem('wattTeams')) || [];
-
-    rows.forEach((row, i) => {
-        const player1 = row.cells[1].querySelector('input').value;
-        const player2 = row.cells[2].querySelector('input').value;
-        const paid = row.cells[3].querySelector('input').checked;
-
-        const existingTeam = existingTeams.find(t => t.player1 === player1 && t.player2 === player2);
-        const rounds = existingTeam ? existingTeam.rounds : Array(5).fill({ points: 0, goals: 0 });
-
-        if (player1 && player2) teams.push({ player1, player2, paid, rounds });
-        row.cells[0].textContent = i + 1;
-    });
-
-    localStorage.setItem('wattTeams', JSON.stringify(teams));
-}
-
-function loadTeams() {
-    const teams = JSON.parse(localStorage.getItem('wattTeams')) || [];
-    const table = document.querySelector('#team-table tbody');
-    teams.forEach((team, i) => {
-        const row = table.insertRow();
-        row.insertCell(0).textContent = i + 1;
-        row.insertCell(1).innerHTML = `<input type="text" value="${team.player1}" oninput="updateLocalStorage()">`;
-        row.insertCell(2).innerHTML = `<input type="text" value="${team.player2}" oninput="updateLocalStorage()">`;
-        row.insertCell(3).innerHTML = `<input type="checkbox" ${team.paid ? 'checked' : ''} onchange="updateLocalStorage()">`;
-        row.insertCell(4).innerHTML = `<button onclick="deleteTeam(this)">Löschen</button>`;
-    });
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    loadTournamentDetails();
-    loadTeams();
-    document.getElementById('player1').focus();
-
-    document.getElementById('player2').addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            addTeamFromForm();
-        }
-    });
-});
-</script>
-
-<!-- Service Worker Registrierung -->
-<script>
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/watt-turnier-app/service-worker.js")
-    .catch(err => console.log("SW registration failed", err));
-}
-</script>
-
-<!-- Versionsanzeige -->
-<div id="app-version" 
-     style="
-       position:fixed;
-       bottom:40px;
-       right:10px;
-       background:#eee;
-       padding:5px 10px;
-       border-radius:5px;
-       font-size:12px;
-       color:#333;
-       z-index:999999;
-     ">
-  Version lädt…
-</div>
-
-<script>
-// Warten, bis der Service Worker wirklich aktiv ist
-async function waitForServiceWorker() {
-  // Wenn noch kein aktiver Controller existiert → warten
-  if (!navigator.serviceWorker.controller) {
-    return new Promise(resolve => {
-      navigator.serviceWorker.addEventListener("controllerchange", () => {
-        resolve();
+  <script>
+  // Warten, bis der Service Worker wirklich aktiv ist
+  async function waitForServiceWorker() {
+    if (!navigator.serviceWorker.controller) {
+      return new Promise(resolve => {
+        navigator.serviceWorker.addEventListener("controllerchange", () => {
+          resolve();
+        });
       });
+    }
+  }
+
+  // Version vom Service Worker abfragen
+  async function getAppVersion() {
+    const versionBox = document.getElementById("app-version");
+    versionBox.textContent = "Version lädt…";
+
+    await waitForServiceWorker();
+
+    const registration = await navigator.serviceWorker.getRegistration();
+    if (!registration || !registration.active) {
+      versionBox.textContent = "Keine Version verfügbar";
+      return;
+    }
+
+    registration.active.postMessage({ type: "GET_VERSION" });
+
+    navigator.serviceWorker.addEventListener("message", event => {
+      if (event.data.type === "VERSION") {
+        versionBox.textContent = "Version " + event.data.version;
+      }
     });
   }
-}
 
-// Version vom Service Worker abfragen
-async function getAppVersion() {
-  const versionBox = document.getElementById("app-version");
-  versionBox.textContent = "Version lädt…";
+  getAppVersion();
 
-  // Warten, bis der SW aktiv ist (wichtig bei Passwortseiten!)
-  await waitForServiceWorker();
-
-  const registration = await navigator.serviceWorker.getRegistration();
-  if (!registration || !registration.active) {
-    versionBox.textContent = "Keine Version verfügbar";
-    return;
+  // Update-Banner anzeigen, wenn neuer SW aktiv wird
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      const banner = document.getElementById("update-banner");
+      if (banner) banner.style.display = "block";
+    });
   }
 
-  // Anfrage an den Service Worker senden
-  registration.active.postMessage({ type: "GET_VERSION" });
-
-  // Antwort empfangen
-  navigator.serviceWorker.addEventListener("message", event => {
-    if (event.data.type === "VERSION") {
-      versionBox.textContent = "Version " + event.data.version;
-    }
+  // Klick auf Banner → Seite neu laden
+  document.getElementById("update-banner").addEventListener("click", () => {
+    location.reload();
   });
-}
-
-getAppVersion();
-</script>
-
-
-<!-- Update-Banner -->
-<div id="update-banner" 
-     style="
-       display:none;
-       position:fixed;
-       bottom:80px;
-       left:0;
-       right:0;
-       background:#3656A7;
-       color:white;
-       padding:15px;
-       text-align:center;
-       font-size:16px;
-       z-index:999999;
-     ">
-  Neue Version verfügbar – tippe hier zum Aktualisieren
-</div>
-
-<script>
-// Automatische Versionsanzeige
-async function getAppVersion() {
-  const versionBox = document.getElementById("app-version");
-  if (!navigator.serviceWorker.controller) {
-    versionBox.textContent = "Version lädt…";
-    return;
-  }
-
-  const registration = await navigator.serviceWorker.getRegistration();
-  if (!registration || !registration.active) return;
-
-  registration.active.postMessage({ type: "GET_VERSION" });
-
-  navigator.serviceWorker.addEventListener("message", event => {
-    if (event.data.type === "VERSION") {
-      versionBox.textContent = "Version " + event.data.version;
-    }
-  });
-}
-
-getAppVersion();
-
-// Update-Banner anzeigen, wenn neuer SW aktiv wird
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.addEventListener("controllerchange", () => {
-    const banner = document.getElementById("update-banner");
-    if (banner) banner.style.display = "block";
-  });
-}
-
-// Klick auf Banner → Seite neu laden
-document.getElementById("update-banner").addEventListener("click", () => {
-  location.reload();
-});
-</script>
+  </script>
 
 </body>
 </html>
-
-
-
-
-
-
-
 
