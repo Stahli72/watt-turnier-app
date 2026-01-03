@@ -290,11 +290,27 @@ if ("serviceWorker" in navigator) {
 </script>
 
 <!-- Versionsanzeige -->
+<div id="app-version" 
+     style="
+       position:fixed;
+       bottom:40px;
+       right:10px;
+       background:#eee;
+       padding:5px 10px;
+       border-radius:5px;
+       font-size:12px;
+       color:#333;
+       z-index:999999;
+     ">
+  Version …
+</div>
+
+<!-- Update-Banner -->
 <div id="update-banner" 
      style="
        display:none;
        position:fixed;
-       bottom:70px;
+       bottom:80px;
        left:0;
        right:0;
        background:#3656A7;
@@ -309,12 +325,32 @@ if ("serviceWorker" in navigator) {
 
 <script>
 // Automatische Versionsanzeige
+async function getAppVersion() {
+  const versionBox = document.getElementById("app-version");
+  if (!navigator.serviceWorker.controller) {
+    versionBox.textContent = "Version lädt…";
+    return;
+  }
+
+  const registration = await navigator.serviceWorker.getRegistration();
+  if (!registration || !registration.active) return;
+
+  registration.active.postMessage({ type: "GET_VERSION" });
+
+  navigator.serviceWorker.addEventListener("message", event => {
+    if (event.data.type === "VERSION") {
+      versionBox.textContent = "Version " + event.data.version;
+    }
+  });
+}
+
+getAppVersion();
+
+// Update-Banner anzeigen, wenn neuer SW aktiv wird
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.addEventListener("controllerchange", () => {
     const banner = document.getElementById("update-banner");
-    if (banner) {
-      banner.style.display = "block";
-    }
+    if (banner) banner.style.display = "block";
   });
 }
 
@@ -326,6 +362,7 @@ document.getElementById("update-banner").addEventListener("click", () => {
 
 </body>
 </html>
+
 
 
 
