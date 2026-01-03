@@ -319,9 +319,17 @@ function exportToExcel() {
     <a href="halbfinale.html">🥈<br>Halbfinale</a>
     <a href="finale.html">🥇<br>Finale</a>
 </nav>
+    
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/watt-turnier-app/service-worker.js")
+    .catch(err => console.log("SW registration failed", err));
+}
+</script>
 
 </body>
 </html>
+
 
 
 
