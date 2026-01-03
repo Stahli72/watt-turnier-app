@@ -9,33 +9,38 @@
 </head>
 
 <body>
-
   <h1>Watt-Turnier Anmeldung</h1>
 
-  <div class="container">
-    <label for="teamname">Teamname:</label>
-    <input type="text" id="teamname" placeholder="Teamname eingeben">
+  <section>
+    <h2>Turnierdetails</h2>
+    <p><strong>Datum:</strong> 10.01.2026</p>
+    <p><strong>Ort:</strong> Albert-Kaindl-Sportheim</p>
+    <p><strong>Startgeld:</strong> 10€ pro Teilnehmer</p>
+  </section>
 
-    <label for="spieler1">Spieler 1:</label>
-    <input type="text" id="spieler1" placeholder="Name Spieler 1">
+  <section>
+    <h2>Neues Team hinzufügen</h2>
+    <form id="team-form">
+      <label for="spieler1">Spieler 1</label>
+      <input type="text" id="spieler1" name="spieler1" required>
 
-    <label for="spieler2">Spieler 2:</label>
-    <input type="text" id="spieler2" placeholder="Name Spieler 2">
+      <label for="spieler2">Spieler 2</label>
+      <input type="text" id="spieler2" name="spieler2" required>
 
-    <button onclick="anmelden()">Anmelden</button>
-  </div>
+      <button type="submit">➕ Team hinzufügen</button>
+    </form>
+  </section>
 
-  <div class="menu">
-    <a href="vorrunde.html">Vorrunde</a>
-    <a href="auslosung1.html">Auslosung 1</a>
-    <a href="auslosung2.html">Auslosung 2</a>
-    <a href="auslosung3.html">Auslosung 3</a>
-    <a href="auslosung4.html">Auslosung 4</a>
-    <a href="auslosung5.html">Auslosung 5</a>
-    <a href="viertelfinale.html">Viertelfinale</a>
-    <a href="halbfinale.html">Halbfinale</a>
-    <a href="finale.html">Finale</a>
-  </div>
+  <section>
+    <button id="reset-button">⚠ Alle Teams & Turnierdaten löschen</button>
+  </section>
+
+  <section>
+    <h2>Angemeldete Teams</h2>
+    <ul id="team-list">
+      <li>1 Franz Hans</li>
+    </ul>
+  </section>
 
   <!-- Update-Banner -->
   <div id="update-banner" 
@@ -73,8 +78,16 @@
 
   <script src="script.js"></script>
 
+  <!-- Service Worker Registrierung -->
   <script>
-  // Warten, bis der Service Worker wirklich aktiv ist
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("service-worker.js")
+      .catch(err => console.error("Service Worker Fehler:", err));
+  }
+  </script>
+
+  <!-- Version abfragen -->
+  <script>
   async function waitForServiceWorker() {
     if (!navigator.serviceWorker.controller) {
       return new Promise(resolve => {
@@ -85,7 +98,6 @@
     }
   }
 
-  // Version vom Service Worker abfragen
   async function getAppVersion() {
     const versionBox = document.getElementById("app-version");
     versionBox.textContent = "Version lädt…";
@@ -122,7 +134,5 @@
     location.reload();
   });
   </script>
-
 </body>
 </html>
-
