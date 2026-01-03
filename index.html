@@ -281,6 +281,32 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
+<!-- Service Worker Registrierung -->
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/watt-turnier-app/service-worker.js")
+    .catch(err => console.log("SW registration failed", err));
+}
+</script>
+
+<!-- Versionsanzeige -->
+<div id="update-banner" 
+     style="
+       display:none;
+       position:fixed;
+       bottom:70px;
+       left:0;
+       right:0;
+       background:#3656A7;
+       color:white;
+       padding:15px;
+       text-align:center;
+       font-size:16px;
+       z-index:999999;
+     ">
+  Neue Version verfügbar – tippe hier zum Aktualisieren
+</div>
+
 <script>
 // Automatische Versionsanzeige
 if ("serviceWorker" in navigator) {
@@ -291,10 +317,16 @@ if ("serviceWorker" in navigator) {
     }
   });
 }
+
+// Klick auf Banner → Seite neu laden
+document.getElementById("update-banner").addEventListener("click", () => {
+  location.reload();
+});
 </script>
 
 </body>
 </html>
+
 
 
 
