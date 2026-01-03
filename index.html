@@ -302,8 +302,50 @@ if ("serviceWorker" in navigator) {
        color:#333;
        z-index:999999;
      ">
-  Version …
+  Version lädt…
 </div>
+
+<script>
+// Warten, bis der Service Worker wirklich aktiv ist
+async function waitForServiceWorker() {
+  // Wenn noch kein aktiver Controller existiert → warten
+  if (!navigator.serviceWorker.controller) {
+    return new Promise(resolve => {
+      navigator.serviceWorker.addEventListener("controllerchange", () => {
+        resolve();
+      });
+    });
+  }
+}
+
+// Version vom Service Worker abfragen
+async function getAppVersion() {
+  const versionBox = document.getElementById("app-version");
+  versionBox.textContent = "Version lädt…";
+
+  // Warten, bis der SW aktiv ist (wichtig bei Passwortseiten!)
+  await waitForServiceWorker();
+
+  const registration = await navigator.serviceWorker.getRegistration();
+  if (!registration || !registration.active) {
+    versionBox.textContent = "Keine Version verfügbar";
+    return;
+  }
+
+  // Anfrage an den Service Worker senden
+  registration.active.postMessage({ type: "GET_VERSION" });
+
+  // Antwort empfangen
+  navigator.serviceWorker.addEventListener("message", event => {
+    if (event.data.type === "VERSION") {
+      versionBox.textContent = "Version " + event.data.version;
+    }
+  });
+}
+
+getAppVersion();
+</script>
+
 
 <!-- Update-Banner -->
 <div id="update-banner" 
@@ -362,6 +404,7 @@ document.getElementById("update-banner").addEventListener("click", () => {
 
 </body>
 </html>
+
 
 
 
