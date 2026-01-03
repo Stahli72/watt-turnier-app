@@ -125,5 +125,14 @@
             alert("Die Auslosung wurde zurückgesetzt.");
         }
     </script>
+    
+ <script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/watt-turnier-app/service-worker.js")
+    .catch(err => console.log("SW registration failed", err));
+}
+</script>
+   
 </body>
 </html>
+
