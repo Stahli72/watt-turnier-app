@@ -280,8 +280,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 </script>
+
+<script>
+// Automatische Versionsanzeige
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    const banner = document.getElementById("update-banner");
+    if (banner) {
+      banner.style.display = "block";
+    }
+  });
+}
+</script>
+
 </body>
 </html>
+
 
 
 
