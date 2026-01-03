@@ -320,6 +320,7 @@ function exportToExcel() {
     <a href="finale.html">🥇<br>Finale</a>
 </nav>
     
+<!-- Service Worker Registrierung -->
 <script>
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("/watt-turnier-app/service-worker.js")
@@ -327,8 +328,45 @@ if ("serviceWorker" in navigator) {
 }
 </script>
 
+<!-- Versionsanzeige -->
+<div id="update-banner" 
+     style="
+       display:none;
+       position:fixed;
+       bottom:70px;
+       left:0;
+       right:0;
+       background:#3656A7;
+       color:white;
+       padding:15px;
+       text-align:center;
+       font-size:16px;
+       z-index:999999;
+     ">
+  Neue Version verfügbar – tippe hier zum Aktualisieren
+</div>
+
+<script>
+// Automatische Versionsanzeige
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    const banner = document.getElementById("update-banner");
+    if (banner) {
+      banner.style.display = "block";
+    }
+  });
+}
+
+// Klick auf Banner → Seite neu laden
+document.getElementById("update-banner").addEventListener("click", () => {
+  location.reload();
+});
+</script>
+
+
 </body>
 </html>
+
 
 
 
