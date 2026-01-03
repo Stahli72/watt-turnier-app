@@ -47,7 +47,7 @@
 <body>
     <h1>Auslosung 5</h1>
     <button class="button" onclick="generateDraw()">Auslosung</button>
-    <button class="button" onclick="window.location.href='vorrunde_funktioniert_10.06.html'">Zur Vorrunde</button>
+    <button class="button" onclick="window.location.href='vorrunde.html'">Zur Vorrunde</button>
     <button class="button" onclick="resetDraw()">Reset Auslosung</button>
 
     <div id="draw-result">
@@ -108,5 +108,19 @@
             alert("Die Auslosung wurde zurückgesetzt.");
         }
     </script>
+
+<script>
+// Automatische Versionsanzeige
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    const banner = document.getElementById("update-banner");
+    if (banner) {
+      banner.style.display = "block";
+    }
+  });
+}
+</script>
+
 </body>
 </html>
+
