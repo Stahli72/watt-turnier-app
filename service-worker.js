@@ -1,24 +1,68 @@
 // ------------------------------------------------------
 // Version deiner App (nur hier ändern!)
 // ------------------------------------------------------
-const APP_VERSION = "1.0.0";
+const APP_VERSION = "1.0.1";
 
-// Sofort aktiv werden
+// Cache-Name mit Version
+const CACHE_NAME = "watt-cache-" + APP_VERSION;
+
+// Dateien, die offline verfügbar sein sollen
+const OFFLINE_FILES = [
+  "/watt-turnier-app/",
+  "/watt-turnier-app/index.html",
+  "/watt-turnier-app/vorrunde.html",
+  "/watt-turnier-app/auslosung1.html",
+  "/watt-turnier-app/auslosung2.html",
+  "/watt-turnier-app/auslosung3.html",
+  "/watt-turnier-app/auslosung4.html",
+  "/watt-turnier-app/auslosung5.html",
+  "/watt-turnier-app/viertelfinale.html",
+  "/watt-turnier-app/halbfinale.html",
+  "/watt-turnier-app/finale.html",
+  "/watt-turnier-app/styles.css",
+  "/watt-turnier-app/script.js"
+];
+
+// ------------------------------------------------------
+// INSTALL: Cache vorbereiten
+// ------------------------------------------------------
 self.addEventListener("install", event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(cache => cache.addAll(OFFLINE_FILES))
+  );
   self.skipWaiting();
 });
 
-// Neue Version sofort übernehmen
+// ------------------------------------------------------
+// ACTIVATE: Alte Caches löschen
+// ------------------------------------------------------
 self.addEventListener("activate", event => {
+  event.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(
+        keys
+          .filter(key => key !== CACHE_NAME)
+          .map(key => caches.delete(key))
+      )
+    )
+  );
   clients.claim();
 });
 
-// Immer die neueste Datei laden
+// ------------------------------------------------------
+// FETCH: Online-first, Offline-Fallback
+// ------------------------------------------------------
 self.addEventListener("fetch", event => {
-  event.respondWith(fetch(event.request));
+  event.respondWith(
+    fetch(event.request)
+      .then(response => response)
+      .catch(() => caches.match(event.request))
+  );
 });
 
-// Webseite fragt nach der Version → Service Worker antwortet
+// ------------------------------------------------------
+// Version an Webseite senden
+// ------------------------------------------------------
 self.addEventListener("message", event => {
   if (event.data && event.data.type === "GET_VERSION") {
     event.source.postMessage({
