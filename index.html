@@ -3,15 +3,22 @@
 <html lang="de">
 <head>
 <script>
-  const correctPassword = "SSVKöfering1926";
-  const userPassword = prompt("Bitte Passwort eingeben:");
+    const correctPassword = "SSVK6fering1926";
 
-  if (userPassword !== correctPassword) {
-    window.onload = () => {
-      document.body.innerHTML = "<h2>Zugriff verweigert</h2>";
-    };
-  }
+    // Prüfen, ob bereits eingeloggt
+    if (localStorage.getItem("auth") !== "ok") {
+        const userPassword = prompt("Bitte Passwort eingeben:");
+
+        if (userPassword === correctPassword) {
+            localStorage.setItem("auth", "ok"); // Login merken
+        } else {
+            window.onload = () => {
+                document.body.innerHTML = "<h2>Zugriff verweigert</h2>";
+            };
+        }
+    }
 </script>
+
 
 
 <meta charset="UTF-8">
@@ -326,6 +333,7 @@ document.getElementById("update-banner").addEventListener("click", () => {
 
 </body>
 </html>
+
 
 
 
