@@ -205,43 +205,54 @@ document.getElementById("update-banner").addEventListener("click", () => {
 });
 </script>
 
-<!-- Menüleiste -->
-<div class="menu">
-  <a href="index.html">Anmeldung</a>
-  <a href="vorrunde.html">Vorrunde</a>
-  <a href="auslosung1.html">Auslosung 1</a>
-  <a href="auslosung2.html">Auslosung 2</a>
-  <a href="auslosung3.html">Auslosung 3</a>
-  <a href="auslosung4.html">Auslosung 4</a>
-  <a href="auslosung5.html">Auslosung 5</a>
-  <a href="viertelfinale.html">Viertelfinale</a>
-  <a href="halbfinale.html">Halbfinale</a>
-  <a href="finale.html">Finale</a>
-</div>
+<!-- ✅ Menüleiste -->
+<nav class="app-menu">
+  <a href="index.html">🏠<br>Anmeldung</a>
+  <a href="vorrunde.html">📋<br>Vorrunde</a>
+  <a href="auslosung1.html">🎲<br>Auslosung 1</a>
+  <a href="auslosung2.html">🎲<br>Auslosung 2</a>
+  <a href="auslosung3.html">🎲<br>Auslosung 3</a>
+  <a href="auslosung4.html">🎲<br>Auslosung 4</a>
+  <a href="auslosung5.html">🎲<br>Auslosung 5</a>
+  <a href="viertelfinale.html">🏆<br>Viertelfinale</a>
+  <a href="halbfinale.html">🥈<br>Halbfinale</a>
+  <a href="finale.html">🥇<br>Finale</a>
+</nav>
 
 <style>
-.menu {
+/* Menüleiste exakt wie in index.html */
+.app-menu {
   position: fixed;
   bottom: 0;
   left: 0;
-  right: 0;
-  background: #3656A7;
-  padding: 10px;
+  width: 100%;
+  background-color: #3656A7;
   display: flex;
   justify-content: space-around;
-  flex-wrap: wrap;
-  z-index: 9999;
+  padding: 10px 0;
+  border-top: 2px solid #2a4485;
+  z-index: 1000;
 }
-.menu a {
+
+.app-menu a {
   color: white;
   text-decoration: none;
   font-size: 14px;
-  padding: 5px;
+  text-align: center;
+  flex: 1;
+}
+
+.app-menu a:hover {
+  background-color: #2a4485;
+  padding: 8px;
+  border-radius: 4px;
 }
 </style>
 
+
 </body>
 </html>
+
 
 
 
