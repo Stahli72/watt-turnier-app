@@ -109,6 +109,34 @@
   padding: 8px;
   border-radius: 4px;
 }
+/* Spaltenbreiten optimiert */
+table td:nth-child(1),
+table th:nth-child(1) {
+  width: 50px; /* Platz */
+  text-align: center;
+}
+
+table td:nth-child(2),
+table th:nth-child(2) {
+  width: 100%;
+  max-width: 0;
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+table td:nth-child(3),
+table th:nth-child(3) {
+  width: 70px; /* Punkte */
+  text-align: center;
+}
+
+/* Bessere Zeilenhöhe */
+table td {
+  padding: 8px 6px;
+  vertical-align: middle;
+}
+
+        
 
     </style>
 </head>
@@ -411,6 +439,7 @@ document.getElementById("update-banner").addEventListener("click", () => {
 
 </body>
 </html>
+
 
 
 
