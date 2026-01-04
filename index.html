@@ -136,6 +136,36 @@
 </style>
 </head>
 <body>
+<button class="logout-btn" onclick="logout()">Logout</button>
+
+<script>
+function logout() {
+    localStorage.removeItem("auth");
+    location.reload();
+}
+</script>
+
+<style>
+.logout-btn {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background-color: #3656A7;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    z-index: 2000;
+}
+
+.logout-btn:hover {
+    background-color: #2a4485;
+}
+</style>
+
+    
 <h1>Anmeldung für das Watt-Turnier</h1>
 
 <section>
@@ -333,6 +363,7 @@ document.getElementById("update-banner").addEventListener("click", () => {
 
 </body>
 </html>
+
 
 
 
