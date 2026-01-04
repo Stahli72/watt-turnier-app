@@ -109,26 +109,24 @@
   padding: 8px;
   border-radius: 4px;
 }
-/* Spaltenbreiten optimiert */
-table td:nth-child(1),
-table th:nth-child(1) {
-  width: 50px; /* Platz */
-  text-align: center;
+/* Spaltenbreiten optimiert – kompatibel mit allen 15 Spalten */
+table th:nth-child(1),
+table td:nth-child(1) {
+  width: 45px; /* Platz */
 }
 
-table td:nth-child(2),
-table th:nth-child(2) {
-  width: 100%;
-  max-width: 0;
-  word-wrap: break-word;
+table th:nth-child(2),
+table td:nth-child(2) {
+  width: 180px; /* Mannschaften */
   white-space: normal;
+  word-wrap: break-word;
 }
 
-table td:nth-child(3),
-table th:nth-child(3) {
-  width: 70px; /* Punkte */
-  text-align: center;
+table th:nth-child(n+3),
+table td:nth-child(n+3) {
+  width: 60px; /* alle anderen Spalten */
 }
+
 
 /* Bessere Zeilenhöhe */
 table td {
@@ -439,6 +437,7 @@ document.getElementById("update-banner").addEventListener("click", () => {
 
 </body>
 </html>
+
 
 
 
