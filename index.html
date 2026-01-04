@@ -5,19 +5,38 @@
 <script>
     const correctPassword = "SSVK6fering1926";
 
-    // Prüfen, ob bereits eingeloggt
+    // Passwort nur abfragen, wenn nicht schon eingeloggt
     if (localStorage.getItem("auth") !== "ok") {
-        const userPassword = prompt("Bitte Passwort eingeben:");
+        let authenticated = false;
 
-        if (userPassword === correctPassword) {
-            localStorage.setItem("auth", "ok"); // Login merken
-        } else {
+        while (!authenticated) {
+            const userPassword = prompt("Bitte Passwort eingeben:");
+
+            // Wenn der Benutzer auf „Abbrechen“ klickt
+            if (userPassword === null) {
+                // Meldung anzeigen und Schleife beenden
+                alert("Zugriff verweigert.");
+                break;
+            }
+
+            if (userPassword === correctPassword) {
+                localStorage.setItem("auth", "ok");
+                authenticated = true;
+            } else {
+                alert("Passwort falsch. Bitte erneut versuchen.");
+                // Schleife läuft weiter, neue Passworteingabe
+            }
+        }
+
+        // Wenn nach der Schleife immer noch nicht eingeloggt → Seite sperren
+        if (!authenticated && localStorage.getItem("auth") !== "ok") {
             window.onload = () => {
                 document.body.innerHTML = "<h2>Zugriff verweigert</h2>";
             };
         }
     }
 </script>
+
 
 
 <meta charset="UTF-8">
@@ -362,6 +381,7 @@ document.getElementById("update-banner").addEventListener("click", () => {
 
 </body>
 </html>
+
 
 
 
