@@ -82,26 +82,34 @@
             #searchTeam { width: 100%; }
         }
 
-        /* ✅ Menüleiste */
-        .app-menu {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: #3656A7;
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            border-top: 1px solid #ccc;
-            z-index: 999999;
-        }
+        /* Menüleiste exakt wie in index.html */
+.app-menu {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #3656A7;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+  border-top: 2px solid #2a4485;
+  z-index: 1000;
+}
 
-        .app-menu a {
-            text-align: center;
-            font-size: 14px;
-            text-decoration: none;
-            color: black;
-        }
+.app-menu a {
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+  text-align: center;
+  flex: 1;
+}
+
+.app-menu a:hover {
+  background-color: #2a4485;
+  padding: 8px;
+  border-radius: 4px;
+}
+
     </style>
 </head>
 
@@ -403,6 +411,7 @@ document.getElementById("update-banner").addEventListener("click", () => {
 
 </body>
 </html>
+
 
 
 
