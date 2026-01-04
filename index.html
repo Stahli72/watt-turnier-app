@@ -5,33 +5,19 @@
 <script>
     const correctPassword = "SSVK6fering1926";
 
-    function askPassword() {
+    // Prüfen, ob bereits eingeloggt
+    if (localStorage.getItem("auth") !== "ok") {
         const userPassword = prompt("Bitte Passwort eingeben:");
 
         if (userPassword === correctPassword) {
-            localStorage.setItem("auth", "ok");
+            localStorage.setItem("auth", "ok"); // Login merken
         } else {
-            document.body.innerHTML = `
-                <h2>Zugriff verweigert</h2>
-                <button onclick="retryLogin()" 
-                        style="padding:10px 15px; font-size:16px; margin-top:20px;">
-                    Erneut versuchen
-                </button>
-            `;
+            window.onload = () => {
+                document.body.innerHTML = "<h2>Zugriff verweigert</h2>";
+            };
         }
     }
-
-    function retryLogin() {
-        askPassword();
-    }
-
-    // Nur fragen, wenn nicht eingeloggt
-    if (localStorage.getItem("auth") !== "ok") {
-        askPassword();
-    }
 </script>
-
-
 
 
 <meta charset="UTF-8">
@@ -376,6 +362,7 @@ document.getElementById("update-banner").addEventListener("click", () => {
 
 </body>
 </html>
+
 
 
 
