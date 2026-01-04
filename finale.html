@@ -254,7 +254,52 @@ document.getElementById("update-banner").addEventListener("click", () => {
 });
 </script>
 
+<!-- ✅ Menüleiste -->
+<nav class="app-menu">
+  <a href="index.html">🏠<br>Anmeldung</a>
+  <a href="vorrunde.html">📋<br>Vorrunde</a>
+  <a href="auslosung1.html">🎲<br>Auslosung 1</a>
+  <a href="auslosung2.html">🎲<br>Auslosung 2</a>
+  <a href="auslosung3.html">🎲<br>Auslosung 3</a>
+  <a href="auslosung4.html">🎲<br>Auslosung 4</a>
+  <a href="auslosung5.html">🎲<br>Auslosung 5</a>
+  <a href="viertelfinale.html">🏆<br>Viertelfinale</a>
+  <a href="halbfinale.html">🥈<br>Halbfinale</a>
+  <a href="finale.html">🥇<br>Finale</a>
+</nav>
+
+<style>
+/* Menüleiste exakt wie in index.html */
+.app-menu {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #3656A7;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+  border-top: 2px solid #2a4485;
+  z-index: 1000;
+}
+
+.app-menu a {
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+  text-align: center;
+  flex: 1;
+}
+
+.app-menu a:hover {
+  background-color: #2a4485;
+  padding: 8px;
+  border-radius: 4px;
+}
+</style>
+  
 </body>
 </html>
+
 
 
