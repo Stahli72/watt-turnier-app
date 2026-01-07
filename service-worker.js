@@ -24,9 +24,8 @@ const OFFLINE_FILES = [
   "/watt-turnier-app/auslosung5.html",
   "/watt-turnier-app/viertelfinale.html",
   "/watt-turnier-app/halbfinale.html",
-  "/watt-turnier-app/finale.html",
-  "/watt-turnier-app/styles.css",
-  "/watt-turnier-app/script.js"
+  "/watt-turnier-app/finale.html"
+ 
 ];
 
 // ------------------------------------------------------
@@ -80,6 +79,7 @@ self.addEventListener("message", event => {
 
 // Debug-Ausgabe
 console.log("Service Worker Version:", APP_VERSION);
+
 
 
 
