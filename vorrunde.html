@@ -135,71 +135,40 @@ table td {
 }
 
 /* Durchgehender fetter Rahmen für Runde 1 */
-td:has(input.round1) {
-    border-left: 3px solid #000 !important;
-}
-td:has(input.round1) + td {
-    border-right: 3px solid #000 !important;
-}
-
-/* Runde 2 */
-td:has(input.round2) {
-    border-left: 3px solid #000 !important;
-}
-td:has(input.round2) + td {
-    border-right: 3px solid #000 !important;
+/* Kein Rahmen zwischen P und T in jeder Runde */
+#preliminary-round td:nth-child(3),
+#preliminary-round td:nth-child(5),
+#preliminary-round td:nth-child(7),
+#preliminary-round td:nth-child(9),
+#preliminary-round td:nth-child(11) {
+    border-right: none;
 }
 
-/* Runde 3 */
-td:has(input.round3) {
-    border-left: 3px solid #000 !important;
-}
-td:has(input.round3) + td {
-    border-right: 3px solid #000 !important;
-}
-
-/* Runde 4 */
-td:has(input.round4) {
-    border-left: 3px solid #000 !important;
-}
-td:has(input.round4) + td {
-    border-right: 3px solid #000 !important;
+#preliminary-round td:nth-child(4),
+#preliminary-round td:nth-child(6),
+#preliminary-round td:nth-child(8),
+#preliminary-round td:nth-child(10),
+#preliminary-round td:nth-child(12) {
+    border-left: none;
 }
 
-/* Runde 5 */
-td:has(input.round5) {
-    border-left: 3px solid #000 !important;
-}
-td:has(input.round5) + td {
-    border-right: 3px solid #000 !important;
-}
-
-/* Zwischen P und T KEIN Rahmen */
-td:has(input.round1),
-td:has(input.round2),
-td:has(input.round3),
-td:has(input.round4),
-td:has(input.round5) {
-    border-right: none !important;
+/* Fetter Rahmen links (P) und rechts (T) für jede Runde */
+#preliminary-round td:nth-child(3),
+#preliminary-round td:nth-child(5),
+#preliminary-round td:nth-child(7),
+#preliminary-round td:nth-child(9),
+#preliminary-round td:nth-child(11) {
+    border-left: 3px solid #000;
 }
 
-/* Fetter Rahmen links */
-td:has(input.round1),
-td:has(input.round2),
-td:has(input.round3),
-td:has(input.round4),
-td:has(input.round5) {
-    border-left: 3px solid #000 !important;
+#preliminary-round td:nth-child(4),
+#preliminary-round td:nth-child(6),
+#preliminary-round td:nth-child(8),
+#preliminary-round td:nth-child(10),
+#preliminary-round td:nth-child(12) {
+    border-right: 3px solid #000;
 }
 
-/* Fetter Rahmen rechts (auf der T-Spalte) */
-td:has(input.round1) + td,
-td:has(input.round2) + td,
-td:has(input.round3) + td,
-td:has(input.round4) + td,
-td:has(input.round5) + td {
-    border-right: 3px solid #000 !important;
-}
         
 
     </style>
@@ -431,6 +400,7 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
 
 
 
