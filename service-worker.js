@@ -3,6 +3,12 @@
 // ------------------------------------------------------
 const APP_VERSION = "1.0.6";
 
+self.addEventListener("message", event => {
+  if (event.data && event.data.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
+});
+
 // Cache-Name mit Version
 const CACHE_NAME = "watt-cache-" + APP_VERSION;
 
@@ -74,6 +80,7 @@ self.addEventListener("message", event => {
 
 // Debug-Ausgabe
 console.log("Service Worker Version:", APP_VERSION);
+
 
 
 
