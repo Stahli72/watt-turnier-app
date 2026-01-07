@@ -256,8 +256,9 @@ function loadTeamsFromLocalStorage() {
             const goals = team.rounds?.[i]?.goals ?? '';
             const roundClass = `round${i+1}`;
 
-            row.insertCell(-1).innerHTML = `<input type="number" class="points ${roundClass}" data-round="${i}" value="${points}">`;
-            row.insertCell(-1).innerHTML = `<input type="number" class="goals ${roundClass}" data-round="${i}" value="${goals}">`;
+            row.insertCell(-1).innerHTML = `<input type="number" class="points ${roundClass}" data-round="${i}" value="${points === 0 ? '' : points}">`;
+            row.insertCell(-1).innerHTML = `<input type="number" class="goals ${roundClass}" data-round="${i}" value="${goals === 0 ? '' : goals}">`;
+
         }
 
         row.insertCell(-1).innerHTML = `<input type="number" class="total-points" readonly>`;
@@ -418,6 +419,7 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
 
 
 
