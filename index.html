@@ -49,12 +49,24 @@
 
 <!-- Service Worker Registrierung -->
 <script>
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("service-worker.js")
-      .then(() => console.log("Service Worker registriert"))
-      .catch(err => console.error("SW Fehler:", err));
-  }
+navigator.serviceWorker.register("service-worker.js").then(reg => {
+    // Sofort aktivieren, falls möglich
+    if (reg.waiting) {
+        reg.waiting.postMessage({ type: "SKIP_WAITING" });
+    }
+
+    // Wenn ein neuer SW installiert wird, sofort übernehmen
+    reg.addEventListener("updatefound", () => {
+        const newSW = reg.installing;
+        newSW.addEventListener("statechange", () => {
+            if (newSW.state === "installed" && navigator.serviceWorker.controller) {
+                newSW.postMessage({ type: "SKIP_WAITING" });
+            }
+        });
+    });
+});
 </script>
+
 
 <style>
     body {
@@ -408,6 +420,7 @@ document.getElementById("update-banner").addEventListener("click", () => {
 
 </body>
 </html>
+
 
 
 
