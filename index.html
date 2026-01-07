@@ -47,25 +47,6 @@
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#3656A7">
 
-<!-- Service Worker Registrierung -->
-<script>
-navigator.serviceWorker.register("service-worker.js").then(reg => {
-    // Sofort aktivieren, falls möglich
-    if (reg.waiting) {
-        reg.waiting.postMessage({ type: "SKIP_WAITING" });
-    }
-
-    // Wenn ein neuer SW installiert wird, sofort übernehmen
-    reg.addEventListener("updatefound", () => {
-        const newSW = reg.installing;
-        newSW.addEventListener("statechange", () => {
-            if (newSW.state === "installed" && navigator.serviceWorker.controller) {
-                newSW.postMessage({ type: "SKIP_WAITING" });
-            }
-        });
-    });
-});
-</script>
 
 
 <style>
@@ -434,6 +415,7 @@ document.getElementById("update-banner").addEventListener("click", () => {
 
 </body>
 </html>
+
 
 
 
