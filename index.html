@@ -181,9 +181,17 @@ function logout() {
 
 <section>
     <h2>Turnierdetails</h2>
-    <p><strong>Datum:</strong> <input id="tournament-date" onchange="saveTournamentDetails()" /></p>
-    <p><strong>Ort:</strong> <input id="tournament-location" onchange="saveTournamentDetails()" /></p>
-    <p><strong>Startgeld:</strong> <input id="tournament-fee" onchange="saveTournamentDetails()" /></p>
+    <div class="turnier-details">
+    <div class="label">Datum:</div>
+    <div class="value"><input id="tournament-date" onchange="saveTournamentDetails()" /></div>
+
+    <div class="label">Ort:</div>
+    <div class="value"><input id="tournament-location" onchange="saveTournamentDetails()" /></div>
+
+    <div class="label">Startgeld:</div>
+    <div class="value"><input id="tournament-fee" onchange="saveTournamentDetails()" /></div>
+</div>
+
 </section>
 
 <!-- Komfortables Eingabeformular -->
@@ -422,6 +430,7 @@ document.getElementById("update-banner").addEventListener("click", () => {
 
 </body>
 </html>
+
 
 
 
