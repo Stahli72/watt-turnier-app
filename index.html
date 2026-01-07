@@ -351,24 +351,25 @@ if ("serviceWorker" in navigator) {
     Version lädt…
 </div>
 <script>
-async function getAppVersion() {
-    const versionBox = document.getElementById("app-version");
-
-    try {
-        // Version ohne Cache laden
-        const response = await fetch("version.json", { cache: "no-store" });
-        const data = await response.json();
-
-        versionBox.textContent = "Version " + data.version;
-    } catch (err) {
-        versionBox.textContent = "Version unbekannt";
-        console.error("Fehler beim Laden der Version:", err);
-    }
+// Version vom Service Worker anfordern
+if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+    navigator.serviceWorker.controller.postMessage({ type: "GET_VERSION" });
+} else {
+    // Falls der SW noch nicht aktiv ist, später erneut versuchen
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+        navigator.serviceWorker.controller.postMessage({ type: "GET_VERSION" });
+    });
 }
 
-// Version sofort laden
-getAppVersion();
+// Antwort vom Service Worker empfangen
+navigator.serviceWorker.addEventListener("message", event => {
+    if (event.data && event.data.type === "VERSION") {
+        const versionBox = document.getElementById("app-version");
+        versionBox.textContent = "Version " + event.data.version;
+    }
+});
 </script>
+
 
     
     <div id="update-banner" 
@@ -407,6 +408,7 @@ document.getElementById("update-banner").addEventListener("click", () => {
 
 </body>
 </html>
+
 
 
 
