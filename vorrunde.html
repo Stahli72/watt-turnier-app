@@ -134,75 +134,53 @@ table td {
   vertical-align: middle;
 }
 
-/* Durchgehender fetter Rahmen für Runde 1 */
-/* Kein Rahmen zwischen P und T in jeder Runde */
+/* Vorrunden-Rahmen: P/T-Spalten für alle Runden */
+
+/* Spalten:
+   1 = Platz
+   2 = Team
+   3/4 = Runde 1 (P/T)
+   5/6 = Runde 2
+   7/8 = Runde 3
+   9/10 = Runde 4
+   11/12 = Runde 5
+*/
+
+/* Kein Rahmen zwischen P und T */
 #preliminary-round td:nth-child(3),
 #preliminary-round td:nth-child(5),
 #preliminary-round td:nth-child(7),
 #preliminary-round td:nth-child(9),
 #preliminary-round td:nth-child(11) {
-    border-right: none;
-}
-
-#preliminary-round td:nth-child(4),
-#preliminary-round td:nth-child(6),
-#preliminary-round td:nth-child(8),
-#preliminary-round td:nth-child(10),
-#preliminary-round td:nth-child(12) {
-    border-left: none;
-}
-
-/* Fetter Rahmen links (P) und rechts (T) für jede Runde */
-#preliminary-round td:nth-child(3),
-#preliminary-round td:nth-child(5),
-#preliminary-round td:nth-child(7),
-#preliminary-round td:nth-child(9),
-#preliminary-round td:nth-child(11) {
-    border-left: 3px solid #000;
-}
-
-#preliminary-round td:nth-child(4),
-#preliminary-round td:nth-child(6),
-#preliminary-round td:nth-child(8),
-#preliminary-round td:nth-child(10),
-#preliminary-round td:nth-child(12) {
-    border-right: 3px solid #000;
-}
-
-/* --- Kein Rahmen zwischen P und T --- */
-td:has(input.round1),
-td:has(input.round2),
-td:has(input.round3),
-td:has(input.round4),
-td:has(input.round5) {
     border-right: none !important;
 }
 
-td:has(input.round1) + td,
-td:has(input.round2) + td,
-td:has(input.round3) + td,
-td:has(input.round4) + td,
-td:has(input.round5) + td {
+#preliminary-round td:nth-child(4),
+#preliminary-round td:nth-child(6),
+#preliminary-round td:nth-child(8),
+#preliminary-round td:nth-child(10),
+#preliminary-round td:nth-child(12) {
     border-left: none !important;
 }
 
-/* --- Fetter Rahmen links von P --- */
-td:has(input.round1),
-td:has(input.round2),
-td:has(input.round3),
-td:has(input.round4),
-td:has(input.round5) {
+/* Fetter Rahmen links von P */
+#preliminary-round td:nth-child(3),
+#preliminary-round td:nth-child(5),
+#preliminary-round td:nth-child(7),
+#preliminary-round td:nth-child(9),
+#preliminary-round td:nth-child(11) {
     border-left: 3px solid #000 !important;
 }
 
-/* --- Fetter Rahmen rechts von T --- */
-td:has(input.round1) + td,
-td:has(input.round2) + td,
-td:has(input.round3) + td,
-td:has(input.round4) + td,
-td:has(input.round5) + td {
+/* Fetter Rahmen rechts von T */
+#preliminary-round td:nth-child(4),
+#preliminary-round td:nth-child(6),
+#preliminary-round td:nth-child(8),
+#preliminary-round td:nth-child(10),
+#preliminary-round td:nth-child(12) {
     border-right: 3px solid #000 !important;
 }
+
         
 
     </style>
@@ -434,6 +412,7 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
 
 
 
