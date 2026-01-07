@@ -134,24 +134,14 @@ table td {
   vertical-align: middle;
 }
 
-/* Vorrunden-Rahmen: P/T-Spalten für alle Runden */
+/* --- Vorrunden-Rahmen: P/T-Spalten für alle Runden --- */
 
-/* Spalten:
-   1 = Platz
-   2 = Team
-   3/4 = Runde 1 (P/T)
-   5/6 = Runde 2
-   7/8 = Runde 3
-   9/10 = Runde 4
-   11/12 = Runde 5
-*/
-
-/* Standard: dünner Rahmen für alle Zellen */
+/* 1) Standard: dünner Rahmen für alle Zellen überschreiben */
 #preliminary-round td {
-    border: 1px solid #000;
+    border: 1px solid #000 !important;
 }
 
-/* --- 1) Kein Rahmen zwischen P und T --- */
+/* 2) Kein Rahmen zwischen P und T */
 #preliminary-round td:nth-child(3),
 #preliminary-round td:nth-child(5),
 #preliminary-round td:nth-child(7),
@@ -168,7 +158,7 @@ table td {
     border-left: none !important;
 }
 
-/* --- 2) Fetter Rahmen links von P --- */
+/* 3) Fetter Rahmen links von P */
 #preliminary-round td:nth-child(3),
 #preliminary-round td:nth-child(5),
 #preliminary-round td:nth-child(7),
@@ -177,7 +167,7 @@ table td {
     border-left: 3px solid #000 !important;
 }
 
-/* --- 3) Fetter Rahmen rechts von T --- */
+/* 4) Fetter Rahmen rechts von T */
 #preliminary-round td:nth-child(4),
 #preliminary-round td:nth-child(6),
 #preliminary-round td:nth-child(8),
@@ -418,6 +408,7 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
 
 
 
