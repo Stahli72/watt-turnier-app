@@ -330,6 +330,7 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 <!-- Service Worker Registrierung -->
+
 <script>
 navigator.serviceWorker.register("service-worker.js").then(reg => {
 
@@ -349,8 +350,13 @@ navigator.serviceWorker.register("service-worker.js").then(reg => {
     }
 });
 </script>
+<script>
+navigator.serviceWorker.addEventListener("controllerchange", () => {
+    window.location.reload();
+});
+</script>
 
-
+   
 <!-- Versionsanzeige -->
 <!-- Versionsanzeige -->
 <div id="app-version" 
@@ -415,6 +421,7 @@ document.getElementById("update-banner").addEventListener("click", () => {
 
 </body>
 </html>
+
 
 
 
