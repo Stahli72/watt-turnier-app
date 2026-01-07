@@ -332,7 +332,8 @@ document.addEventListener('DOMContentLoaded', () => {
 <!-- Service Worker Registrierung -->
 
 <script>
-navigator.serviceWorker.register("service-worker.js").then(reg => {
+navigator.serviceWorker.register("/watt-turnier-app/service-worker.js")
+.then(reg => {
 
     // Wenn ein neuer Service Worker installiert wird → sofort aktivieren
     reg.addEventListener("updatefound", () => {
@@ -421,6 +422,7 @@ document.getElementById("update-banner").addEventListener("click", () => {
 
 </body>
 </html>
+
 
 
 
