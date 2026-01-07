@@ -280,8 +280,11 @@ function saveToLocalStorage() {
         const rounds = [];
 
         row.querySelectorAll('.points').forEach((input, roundIndex) => {
-            const points = parseInt(input.value) || 0;
-            const goals = parseInt(row.querySelector(`.goals[data-round="${roundIndex}"]`).value) || 0;
+            const points = input.value === '' ? '' : parseInt(input.value);
+const goals = row.querySelector(`.goals[data-round="${roundIndex}"]`).value === '' 
+              ? '' 
+              : parseInt(row.querySelector(`.goals[data-round="${roundIndex}"]`).value);
+
             rounds.push({ points, goals });
         });
 
@@ -415,6 +418,7 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
 
 
 
