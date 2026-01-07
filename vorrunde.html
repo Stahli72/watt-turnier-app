@@ -146,12 +146,12 @@ table td {
    11/12 = Runde 5
 */
 
-/* Standard: erst mal alles normal lassen */
+/* Standard: dünner Rahmen für alle Zellen */
 #preliminary-round td {
     border: 1px solid #000;
 }
 
-/* Kein Rahmen zwischen P und T */
+/* --- 1) Kein Rahmen zwischen P und T --- */
 #preliminary-round td:nth-child(3),
 #preliminary-round td:nth-child(5),
 #preliminary-round td:nth-child(7),
@@ -168,7 +168,7 @@ table td {
     border-left: none !important;
 }
 
-/* Fetter Rahmen links von P */
+/* --- 2) Fetter Rahmen links von P --- */
 #preliminary-round td:nth-child(3),
 #preliminary-round td:nth-child(5),
 #preliminary-round td:nth-child(7),
@@ -177,7 +177,7 @@ table td {
     border-left: 3px solid #000 !important;
 }
 
-/* Fetter Rahmen rechts von T */
+/* --- 3) Fetter Rahmen rechts von T --- */
 #preliminary-round td:nth-child(4),
 #preliminary-round td:nth-child(6),
 #preliminary-round td:nth-child(8),
@@ -185,6 +185,7 @@ table td {
 #preliminary-round td:nth-child(12) {
     border-right: 3px solid #000 !important;
 }
+
 
         
 
@@ -417,6 +418,7 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
 
 
 
