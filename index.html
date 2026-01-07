@@ -350,11 +350,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <!-- Service Worker Registrierung -->
 <script>
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/watt-turnier-app/service-worker.js")
-    .catch(err => console.log("SW registration failed", err));
-}
+navigator.serviceWorker.register("service-worker.js").then(reg => {
+
+    // Wenn ein neuer Service Worker installiert wird → sofort aktivieren
+    reg.addEventListener("updatefound", () => {
+        const newSW = reg.installing;
+        newSW.addEventListener("statechange", () => {
+            if (newSW.state === "installed") {
+                newSW.postMessage({ type: "SKIP_WAITING" });
+            }
+        });
+    });
+
+    // Falls bereits ein SW wartet → sofort aktivieren
+    if (reg.waiting) {
+        reg.waiting.postMessage({ type: "SKIP_WAITING" });
+    }
+});
 </script>
+
 
 <!-- Versionsanzeige -->
 <!-- Versionsanzeige -->
@@ -420,6 +434,7 @@ document.getElementById("update-banner").addEventListener("click", () => {
 
 </body>
 </html>
+
 
 
 
