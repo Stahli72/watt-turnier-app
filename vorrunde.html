@@ -135,39 +135,45 @@ table td {
 }
 
 /* Durchgehender fetter Rahmen für Runde 1 */
-td.round1,
-td.round1 + td {
+td:has(input.round1) {
     border-left: 3px solid #000 !important;
+}
+td:has(input.round1) + td {
     border-right: 3px solid #000 !important;
 }
 
-/* Durchgehender fetter Rahmen für Runde 2 */
-td.round2,
-td.round2 + td {
+/* Runde 2 */
+td:has(input.round2) {
     border-left: 3px solid #000 !important;
+}
+td:has(input.round2) + td {
     border-right: 3px solid #000 !important;
 }
 
-/* Durchgehender fetter Rahmen für Runde 3 */
-td.round3,
-td.round3 + td {
+/* Runde 3 */
+td:has(input.round3) {
     border-left: 3px solid #000 !important;
+}
+td:has(input.round3) + td {
     border-right: 3px solid #000 !important;
 }
 
-/* Durchgehender fetter Rahmen für Runde 4 */
-td.round4,
-td.round4 + td {
+/* Runde 4 */
+td:has(input.round4) {
     border-left: 3px solid #000 !important;
+}
+td:has(input.round4) + td {
     border-right: 3px solid #000 !important;
 }
 
-/* Durchgehender fetter Rahmen für Runde 5 */
-td.round5,
-td.round5 + td {
+/* Runde 5 */
+td:has(input.round5) {
     border-left: 3px solid #000 !important;
+}
+td:has(input.round5) + td {
     border-right: 3px solid #000 !important;
 }
+
         
 
     </style>
@@ -399,6 +405,7 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
 
 
 
