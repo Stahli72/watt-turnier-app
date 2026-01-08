@@ -1,7 +1,7 @@
 // ------------------------------------------------------
 // Version deiner App (nur hier ändern!)
 // ------------------------------------------------------
-const APP_VERSION = "1.0.7";
+const APP_VERSION = "1.0.8";
 
 self.addEventListener("message", event => {
   if (event.data && event.data.type === "SKIP_WAITING") {
@@ -79,6 +79,7 @@ self.addEventListener("message", event => {
 
 // Debug-Ausgabe
 console.log("Service Worker Version:", APP_VERSION);
+
 
 
 
