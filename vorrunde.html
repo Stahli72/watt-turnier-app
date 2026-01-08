@@ -327,11 +327,11 @@ function calculateTotals() {
         let totalGoals = 0;
 
         row.querySelectorAll('.points').forEach(input => {
-            totalPoints += input.value === '' ? '' 0 : Number(input.value);
+            totalPoints += input.value === '' ? 0 : Number(input.value);
         });
 
         row.querySelectorAll('.goals').forEach(input => {
-            totalGoals += input.value === '' ? '' 0 : Number(input.value);
+            totalGoals += input.value === '' ? 0 : Number(input.value);
         });
 
         row.querySelector('.total-points').value = totalPoints;
@@ -440,6 +440,7 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
 
 
 
