@@ -327,7 +327,7 @@ function updateLocalStorage() {
         const paid = row.cells[3].querySelector('input').checked;
 
         const existingTeam = existingTeams.find(t => t.player1 === player1 && t.player2 === player2);
-        const rounds = existingTeam ? existingTeam.rounds : Array(5).fill({ points: 0, goals: 0 });
+        const rounds = existingTeam ? existingTeam.rounds : Array(5).fill({ points: '', goals: '' });
 
         if (player1 && player2) teams.push({ player1, player2, paid, rounds });
         row.cells[0].textContent = i + 1;
@@ -456,6 +456,7 @@ document.getElementById("update-banner").addEventListener("click", () => {
 
 </body>
 </html>
+
 
 
 
