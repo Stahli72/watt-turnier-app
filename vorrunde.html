@@ -281,7 +281,7 @@ function saveToLocalStorage() {
         const rounds = [];
 
         row.querySelectorAll('.points').forEach((input, roundIndex) => {
-            const points = input.value === '' ? '' : parseInt(input.value);
+            const points = input.value === '' ? '' : Number(input.value);
 const goals = row.querySelector(`.goals[data-round="${roundIndex}"]`).value === '' 
               ? '' 
               : parseInt(row.querySelector(`.goals[data-round="${roundIndex}"]`).value);
@@ -419,6 +419,7 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
 
 
 
