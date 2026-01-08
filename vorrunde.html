@@ -183,12 +183,30 @@ table td {
     border-right: 3px solid #000 !important;
 }
 
-/* Fetter roter Rahmen für die Spalte Gesamt Total */
+/* --- Fetter roter Rahmen für die komplette Spalte Gesamt Total --- */
+
+/* 1. Kopfzeile (Ru 1, Ru 2, ... steht darüber) */
+#preliminary-round thead tr:first-child th:nth-child(15) {
+    border-top: 4px solid red !important;
+}
+
+/* 2. Kopfzeile (P/T-Zeile) */
+#preliminary-round thead tr:nth-child(2) th:nth-child(15) {
+    border-top: 4px solid red !important;
+}
+
+/* Alle Zellen der Spalte links + rechts einfassen */
 #preliminary-round th:nth-child(15),
 #preliminary-round td:nth-child(15) {
     border-left: 4px solid red !important;
     border-right: 4px solid red !important;
 }
+
+/* Unterste Zeile (letzte Eingabezeile) */
+#preliminary-round tbody tr:last-child td:nth-child(15) {
+    border-bottom: 4px solid red !important;
+}
+
 
         
 
@@ -425,6 +443,7 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
 
 
 
