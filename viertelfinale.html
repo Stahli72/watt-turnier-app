@@ -100,7 +100,14 @@ function displayPairs(pairs) {
     select.className = 'winner-select';
     select.dataset.match = pair.match;
     select.innerHTML = `<option value="">Sieger wählen</option><option value="Team A">Team A</option><option value="Team B">Team B</option>`;
-    if (pair.winner) select.value = (pair.winner === pair.teamA) ? 'Team A' : 'Team B';
+    if (pair.winner) {
+    if (pair.winner === pair.teamA) {
+        select.value = "Team A";
+    } else if (pair.winner === pair.teamB) {
+        select.value = "Team B";
+    }
+}
+
     selectCell.appendChild(select);
   });
 }
@@ -193,6 +200,7 @@ body {
   
 </body>
 </html>
+
 
 
 
