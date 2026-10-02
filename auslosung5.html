@@ -59,6 +59,12 @@
         const existingMatches = JSON.parse(localStorage.getItem('matches')) || [];
         const teamsFromStorage = JSON.parse(localStorage.getItem('wattTeams')) || [];
 
+        function matchExists(teamA, teamB, existingMatches) {
+            const directMatch = `${teamA} vs ${teamB}`;
+            const reverseMatch = `${teamB} vs ${teamA}`;
+            return existingMatches.some(match => match === directMatch || match === reverseMatch);
+        }
+
         function generateDraw() {
             if (teamsFromStorage.length < 2) {
                 alert("Es müssen mindestens 2 Teams vorhanden sein, um eine Auslosung zu machen.");
@@ -72,13 +78,17 @@
             let currentMatches = [];
 
             for (let i = 0; i < shuffledTeams.length; i += 2) {
-                const match = `${shuffledTeams[i]} vs ${shuffledTeams[i + 1]}`;
-                if (existingMatches.includes(match)) {
+                const teamA = shuffledTeams[i];
+                const teamB = shuffledTeams[i + 1];
+                const match = `${teamA} vs ${teamB}`;
+
+                if (matchExists(teamA, teamB, existingMatches)) {
                     alert(`Die Paarung "${match}" existiert bereits. Versuche es mit einer neuen Auslosung.`);
                     return;
                 }
+
                 currentMatches.push(match);
-                drawHTML += `<tr><td>${shuffledTeams[i]}</td><td>vs</td><td>${shuffledTeams[i + 1]}</td><td>Tisch ${Math.ceil(i / 2) + 1}</td></tr>`;
+                drawHTML += `<tr><td>${teamA}</td><td>vs</td><td>${teamB}</td><td>Tisch ${Math.ceil(i / 2) + 1}</td></tr>`;
             }
             drawHTML += '</table>';
 
@@ -164,8 +174,3 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
-
-
-
-
-
