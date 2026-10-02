@@ -26,8 +26,10 @@
     <script>
         const currentDrawKey = 'auslosung4';
         const currentDrawMatchesKey = 'auslosung4Matches';
+        const allDrawMatchesKey = 'allDrawMatches';
         const previousDraw = localStorage.getItem(currentDrawKey) || null;
         const existingMatches = JSON.parse(localStorage.getItem(currentDrawMatchesKey)) || [];
+        const allDrawMatches = JSON.parse(localStorage.getItem(allDrawMatchesKey)) || [];
         const teamsFromStorage = JSON.parse(localStorage.getItem('wattTeams')) || [];
 
         function matchExists(teamA, teamB, allMatches) {
@@ -59,7 +61,7 @@
                         break;
                     }
 
-                    if (matchExists(teamA, teamB, [...existingMatches, ...candidateMatches])) {
+                    if (matchExists(teamA, teamB, [...allDrawMatches, ...existingMatches, ...candidateMatches])) {
                         valid = false;
                         break;
                     }
@@ -75,8 +77,10 @@
                     });
                     drawHTML += '</table>';
 
+                    const nextAllDrawMatches = Array.from(new Set([...allDrawMatches, ...existingMatches, ...candidateMatches]));
                     localStorage.setItem(currentDrawKey, drawHTML);
                     localStorage.setItem(currentDrawMatchesKey, JSON.stringify([...existingMatches, ...candidateMatches]));
+                    localStorage.setItem(allDrawMatchesKey, JSON.stringify(nextAllDrawMatches));
                     document.getElementById('draw-result').innerHTML = drawHTML;
                     return;
                 }
@@ -100,8 +104,12 @@
         });
 
         function resetDraw() {
+            const pageMatches = JSON.parse(localStorage.getItem(currentDrawMatchesKey)) || [];
+            const remainingGlobalMatches = (JSON.parse(localStorage.getItem(allDrawMatchesKey)) || []).filter(match => !pageMatches.includes(match));
+
             localStorage.removeItem(currentDrawKey);
             localStorage.removeItem(currentDrawMatchesKey);
+            localStorage.setItem(allDrawMatchesKey, JSON.stringify(remainingGlobalMatches));
             document.getElementById('draw-result').innerHTML = '';
             alert('Die Auslosung wurde zurückgesetzt.');
         }
