@@ -27,29 +27,69 @@
         const currentDrawKey = 'auslosung1';
         const currentDrawMatchesKey = 'auslosung1Matches';
         const allDrawMatchesKey = 'allDrawMatches';
-        const previousDraw = localStorage.getItem(currentDrawKey) || null;
-        const existingMatches = JSON.parse(localStorage.getItem(currentDrawMatchesKey)) || [];
-        const allDrawMatches = JSON.parse(localStorage.getItem(allDrawMatchesKey)) || [];
-        const teamsFromStorage = JSON.parse(localStorage.getItem('wattTeams')) || [];
 
-        function matchExists(teamA, teamB, allMatches) {
-            const directMatch = `${teamA} vs ${teamB}`;
-            const reverseMatch = `${teamB} vs ${teamA}`;
-            return allMatches.some(match => match === directMatch || match === reverseMatch);
+        function getStoredArray(key) {
+            try {
+                return JSON.parse(localStorage.getItem(key)) || [];
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function normalizePair(teamA, teamB) {
+            const left = String(teamA).trim();
+            const right = String(teamB).trim();
+            return [left, right].sort().join('||');
+        }
+
+        function pairKeyFromDisplay(match) {
+            const matchText = String(match || '').trim();
+            const [teamA, teamB] = matchText.split(' vs ');
+            if (!teamA || !teamB) return null;
+            return normalizePair(teamA.trim(), teamB.trim());
+        }
+
+        function getTeamNames() {
+            const teams = JSON.parse(localStorage.getItem('wattTeams')) || [];
+            return teams
+                .filter(team => team && (team.player1 || team.player2))
+                .map(team => `${team.player1} / ${team.player2}`);
+        }
+
+        function shuffleArray(array) {
+            const copy = [...array];
+            for (let i = copy.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [copy[i], copy[j]] = [copy[j], copy[i]];
+            }
+            return copy;
+        }
+
+        function renderTable(matches) {
+            let tableHtml = '<table><tr><th>Team 1</th><th>vs</th><th>Team 2</th><th>Tisch</th></tr>';
+            matches.forEach((match, index) => {
+                const [teamA, teamB] = match.split(' vs ');
+                tableHtml += `<tr><td>${teamA}</td><td>vs</td><td>${teamB}</td><td>Tisch ${index + 1}</td></tr>`;
+            });
+            tableHtml += '</table>';
+            return tableHtml;
         }
 
         function generateDraw() {
-            if (teamsFromStorage.length < 2) {
+            const teamNames = getTeamNames();
+            if (teamNames.length < 2) {
                 alert('Es müssen mindestens 2 Teams vorhanden sein, um eine Auslosung zu machen.');
                 return;
             }
 
-            const teamNames = teamsFromStorage.map(team => `${team.player1} / ${team.player2}`);
+            const usedPairKeys = getStoredArray(allDrawMatchesKey);
             const maxAttempts = 500;
 
             for (let attempt = 0; attempt < maxAttempts; attempt++) {
-                const shuffledTeams = shuffleArray([...teamNames]);
+                const shuffledTeams = shuffleArray(teamNames);
                 const candidateMatches = [];
+                const candidateKeys = [];
+                const seenTeams = new Set();
                 let valid = true;
 
                 for (let i = 0; i < shuffledTeams.length; i += 2) {
@@ -61,27 +101,31 @@
                         break;
                     }
 
-                    if (matchExists(teamA, teamB, [...allDrawMatches, ...existingMatches, ...candidateMatches])) {
+                    if (seenTeams.has(teamA) || seenTeams.has(teamB)) {
                         valid = false;
                         break;
                     }
 
+                    const pairKey = normalizePair(teamA, teamB);
+                    if (usedPairKeys.includes(pairKey) || candidateKeys.includes(pairKey)) {
+                        valid = false;
+                        break;
+                    }
+
+                    candidateKeys.push(pairKey);
                     candidateMatches.push(`${teamA} vs ${teamB}`);
+                    seenTeams.add(teamA);
+                    seenTeams.add(teamB);
                 }
 
                 if (valid) {
-                    let drawHTML = '<table><tr><th>Team 1</th><th>vs</th><th>Team 2</th><th>Tisch</th></tr>';
-                    candidateMatches.forEach((match, index) => {
-                        const [teamA, teamB] = match.split(' vs ');
-                        drawHTML += `<tr><td>${teamA}</td><td>vs</td><td>${teamB}</td><td>Tisch ${index + 1}</td></tr>`;
-                    });
-                    drawHTML += '</table>';
+                    const drawHtml = renderTable(candidateMatches);
+                    const nextUsedPairKeys = Array.from(new Set([...usedPairKeys, ...candidateKeys]));
 
-                    const nextAllDrawMatches = Array.from(new Set([...allDrawMatches, ...existingMatches, ...candidateMatches]));
-                    localStorage.setItem(currentDrawKey, drawHTML);
-                    localStorage.setItem(currentDrawMatchesKey, JSON.stringify([...existingMatches, ...candidateMatches]));
-                    localStorage.setItem(allDrawMatchesKey, JSON.stringify(nextAllDrawMatches));
-                    document.getElementById('draw-result').innerHTML = drawHTML;
+                    localStorage.setItem(currentDrawKey, drawHtml);
+                    localStorage.setItem(currentDrawMatchesKey, JSON.stringify(candidateMatches));
+                    localStorage.setItem(allDrawMatchesKey, JSON.stringify(nextUsedPairKeys));
+                    document.getElementById('draw-result').innerHTML = drawHtml;
                     return;
                 }
             }
@@ -89,23 +133,13 @@
             alert('Es gibt keine mögliche Paarung mehr für diese Auslosung. Bitte machen Sie einen Reset für diese Auslosung und versuchen Sie es erneut.');
         }
 
-        function shuffleArray(arr) {
-            for (let i = arr.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [arr[i], arr[j]] = [arr[j], arr[i]];
-            }
-            return arr;
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            if (previousDraw) {
-                document.getElementById('draw-result').innerHTML = previousDraw;
-            }
-        });
-
         function resetDraw() {
-            const pageMatches = JSON.parse(localStorage.getItem(currentDrawMatchesKey)) || [];
-            const remainingGlobalMatches = (JSON.parse(localStorage.getItem(allDrawMatchesKey)) || []).filter(match => !pageMatches.includes(match));
+            const pageMatches = getStoredArray(currentDrawMatchesKey);
+            const pageKeys = pageMatches
+                .map(pairKeyFromDisplay)
+                .filter(Boolean);
+            const remainingGlobalMatches = getStoredArray(allDrawMatchesKey)
+                .filter(globalKey => !pageKeys.includes(globalKey));
 
             localStorage.removeItem(currentDrawKey);
             localStorage.removeItem(currentDrawMatchesKey);
@@ -113,6 +147,13 @@
             document.getElementById('draw-result').innerHTML = '';
             alert('Die Auslosung wurde zurückgesetzt.');
         }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedDraw = localStorage.getItem(currentDrawKey);
+            if (savedDraw) {
+                document.getElementById('draw-result').innerHTML = savedDraw;
+            }
+        });
     </script>
 
     <script>
