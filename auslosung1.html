@@ -59,6 +59,12 @@
         const existingMatches = JSON.parse(localStorage.getItem('matches')) || [];
         const teamsFromStorage = JSON.parse(localStorage.getItem('wattTeams')) || []; // Teams aus Vorrunde laden
 
+        function matchExists(teamA, teamB, existingMatches) {
+            const directMatch = `${teamA} vs ${teamB}`;
+            const reverseMatch = `${teamB} vs ${teamA}`;
+            return existingMatches.some(match => match === directMatch || match === reverseMatch);
+        }
+
         // Funktion für die Auslosung
         function generateDraw() {
             // Sicherstellen, dass es genug Teams gibt (mindestens 2 Teams)
@@ -69,7 +75,7 @@
 
             // Teams werden aus dem LocalStorage geladen
             const teamNames = teamsFromStorage.map(team => `${team.player1} / ${team.player2}`);
-            
+
             // Mischen der Teams
             const shuffledTeams = shuffleArray(teamNames);
 
@@ -78,16 +84,18 @@
             let currentMatches = [];
 
             for (let i = 0; i < shuffledTeams.length; i += 2) {
-                const match = `${shuffledTeams[i]} vs ${shuffledTeams[i + 1]}`;
-                
-                // Überprüfen, ob die Paarung schon existiert
-                if (existingMatches.includes(match)) {
+                const teamA = shuffledTeams[i];
+                const teamB = shuffledTeams[i + 1];
+                const match = `${teamA} vs ${teamB}`;
+
+                // Überprüfen, ob die Paarung schon existiert (auch in umgekehrter Reihenfolge)
+                if (matchExists(teamA, teamB, existingMatches)) {
                     alert(`Die Paarung "${match}" existiert bereits. Versuche es mit einer neuen Auslosung.`);
                     return;
                 }
 
                 currentMatches.push(match);
-                drawHTML += `<tr><td>${shuffledTeams[i]}</td><td>vs</td><td>${shuffledTeams[i + 1]}</td><td>Tisch ${Math.ceil(i / 2) + 1}</td></tr>`;
+                drawHTML += `<tr><td>${teamA}</td><td>vs</td><td>${teamB}</td><td>Tisch ${Math.ceil(i / 2) + 1}</td></tr>`;
             }
             drawHTML += '</table>';
 
@@ -125,7 +133,7 @@
             alert("Die Auslosung wurde zurückgesetzt.");
         }
     </script>
-    
+
 <!-- Service Worker Registrierung -->
 <script>
 if ("serviceWorker" in navigator) {
