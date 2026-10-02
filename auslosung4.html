@@ -3,58 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auslosung 3</title>
+    <title>Auslosung 4</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        .button {
-            margin: 10px 0;
-            padding: 5px 10px;
-            background-color: #3656A7;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        .button:hover {
-            background-color: #3656A7;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        table, th, td {
-            border: 1px solid #000;
-        }
-        th, td {
-            padding: 8px;
-            text-align: center;
-        }
-        th {
-            background-color: #3656A7;
-            color: white;
-        }
-        td {
-            background-color: #f2f2f2;
-        }
-        #draw-result {
-            margin-top: 20px;
-        }
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .button { margin: 10px 0; padding: 5px 10px; background-color: #3656A7; color: white; border: none; cursor: pointer; }
+        .button:hover { background-color: #3656A7; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        table, th, td { border: 1px solid #000; }
+        th, td { padding: 8px; text-align: center; }
+        th { background-color: #3656A7; color: white; }
+        td { background-color: #f2f2f2; }
+        #draw-result { margin-top: 20px; }
     </style>
 </head>
 <body>
-    <h1>Auslosung 3</h1>
+    <h1>Auslosung 4</h1>
     <button class="button" onclick="generateDraw()">Auslosung</button>
     <button class="button" onclick="resetDraw()">Reset Auslosung</button>
 
-    <div id="draw-result">
-        <!-- Hier wird die Auslosung angezeigt -->
-    </div>
+    <div id="draw-result"></div>
 
     <script>
-        const previousDraw = localStorage.getItem('auslosung3') || null;
+        const currentDrawKey = 'auslosung4';
+        const previousDraw = localStorage.getItem(currentDrawKey) || null;
         const existingMatches = JSON.parse(localStorage.getItem('matches')) || [];
         const teamsFromStorage = JSON.parse(localStorage.getItem('wattTeams')) || [];
 
@@ -66,7 +37,7 @@
 
         function generateDraw() {
             if (teamsFromStorage.length < 2) {
-                alert("Es müssen mindestens 2 Teams vorhanden sein, um eine Auslosung zu machen.");
+                alert('Es müssen mindestens 2 Teams vorhanden sein, um eine Auslosung zu machen.');
                 return;
             }
 
@@ -97,22 +68,20 @@
 
                 if (valid) {
                     let drawHTML = '<table><tr><th>Team 1</th><th>vs</th><th>Team 2</th><th>Tisch</th></tr>';
-
                     candidateMatches.forEach((match, index) => {
                         const [teamA, teamB] = match.split(' vs ');
                         drawHTML += `<tr><td>${teamA}</td><td>vs</td><td>${teamB}</td><td>Tisch ${index + 1}</td></tr>`;
                     });
-
                     drawHTML += '</table>';
 
-                    localStorage.setItem('auslosung3', drawHTML);
+                    localStorage.setItem(currentDrawKey, drawHTML);
                     localStorage.setItem('matches', JSON.stringify([...existingMatches, ...candidateMatches]));
                     document.getElementById('draw-result').innerHTML = drawHTML;
                     return;
                 }
             }
 
-            alert("Es gibt keine mögliche Paarung mehr für diese Auslosung. Bitte machen Sie einen Reset für diese Auslosung und versuchen Sie es erneut.");
+            alert('Es gibt keine mögliche Paarung mehr für diese Auslosung. Bitte machen Sie einen Reset für diese Auslosung und versuchen Sie es erneut.');
         }
 
         function shuffleArray(arr) {
@@ -130,10 +99,10 @@
         });
 
         function resetDraw() {
-            localStorage.removeItem('auslosung3');
+            localStorage.removeItem(currentDrawKey);
             localStorage.removeItem('matches');
             document.getElementById('draw-result').innerHTML = '';
-            alert("Die Auslosung wurde zurückgesetzt.");
+            alert('Die Auslosung wurde zurückgesetzt.');
         }
     </script>
 
@@ -159,32 +128,10 @@
 
     <style>
     .app-menu {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background-color: #3656A7;
-      display: flex;
-      justify-content: space-around;
-      padding: 10px 0;
-      border-top: 2px solid #2a4485;
-      z-index: 1000;
+      position: fixed; bottom: 0; left: 0; width: 100%; background-color: #3656A7; display: flex; justify-content: space-around; padding: 10px 0; border-top: 2px solid #2a4485; z-index: 1000;
     }
-
-    .app-menu a {
-      color: white;
-      text-decoration: none;
-      font-size: 14px;
-      text-align: center;
-      flex: 1;
-    }
-
-    .app-menu a:hover {
-      background-color: #2a4485;
-      padding: 8px;
-      border-radius: 4px;
-    }
+    .app-menu a { color: white; text-decoration: none; font-size: 14px; text-align: center; flex: 1; }
+    .app-menu a:hover { background-color: #2a4485; padding: 8px; border-radius: 4px; }
     </style>
-
 </body>
 </html>
