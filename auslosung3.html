@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auslosung 3</title>
+    <title>Auslosung 2</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -45,9 +45,8 @@
     </style>
 </head>
 <body>
-    <h1>Auslosung 3</h1>
+    <h1>Auslosung 2</h1>
     <button class="button" onclick="generateDraw()">Auslosung</button>
-    <!-- <button class="button" onclick="window.location.href='vorrunde'">Zur Vorrunde</button> -->
     <button class="button" onclick="resetDraw()">Reset Auslosung</button>
 
     <div id="draw-result">
@@ -55,14 +54,14 @@
     </div>
 
     <script>
-        const previousDraw = localStorage.getItem('auslosung3') || null;
+        const previousDraw = localStorage.getItem('auslosung2') || null;
         const existingMatches = JSON.parse(localStorage.getItem('matches')) || [];
         const teamsFromStorage = JSON.parse(localStorage.getItem('wattTeams')) || [];
 
-        function matchExists(teamA, teamB, existingMatches) {
+        function matchExists(teamA, teamB, allMatches) {
             const directMatch = `${teamA} vs ${teamB}`;
             const reverseMatch = `${teamB} vs ${teamA}`;
-            return existingMatches.some(match => match === directMatch || match === reverseMatch);
+            return allMatches.some(match => match === directMatch || match === reverseMatch);
         }
 
         function generateDraw() {
@@ -72,29 +71,48 @@
             }
 
             const teamNames = teamsFromStorage.map(team => `${team.player1} / ${team.player2}`);
-            const shuffledTeams = shuffleArray(teamNames);
+            const maxAttempts = 500;
 
-            let drawHTML = '<table><tr><th>Team 1</th><th>vs</th><th>Team 2</th><th>Tisch</th></tr>';
-            let currentMatches = [];
+            for (let attempt = 0; attempt < maxAttempts; attempt++) {
+                const shuffledTeams = shuffleArray([...teamNames]);
+                const candidateMatches = [];
+                let valid = true;
 
-            for (let i = 0; i < shuffledTeams.length; i += 2) {
-                const teamA = shuffledTeams[i];
-                const teamB = shuffledTeams[i + 1];
-                const match = `${teamA} vs ${teamB}`;
+                for (let i = 0; i < shuffledTeams.length; i += 2) {
+                    const teamA = shuffledTeams[i];
+                    const teamB = shuffledTeams[i + 1];
 
-                if (matchExists(teamA, teamB, existingMatches)) {
-                    alert(`Die Paarung "${match}" existiert bereits. Versuche es mit einer neuen Auslosung.`);
-                    return;
+                    if (!teamB) {
+                        valid = false;
+                        break;
+                    }
+
+                    if (matchExists(teamA, teamB, [...existingMatches, ...candidateMatches])) {
+                        valid = false;
+                        break;
+                    }
+
+                    candidateMatches.push(`${teamA} vs ${teamB}`);
                 }
 
-                currentMatches.push(match);
-                drawHTML += `<tr><td>${teamA}</td><td>vs</td><td>${teamB}</td><td>Tisch ${Math.ceil(i / 2) + 1}</td></tr>`;
-            }
-            drawHTML += '</table>';
+                if (valid) {
+                    let drawHTML = '<table><tr><th>Team 1</th><th>vs</th><th>Team 2</th><th>Tisch</th></tr>';
 
-            localStorage.setItem('auslosung3', drawHTML);
-            localStorage.setItem('matches', JSON.stringify([...existingMatches, ...currentMatches]));
-            document.getElementById('draw-result').innerHTML = drawHTML;
+                    candidateMatches.forEach((match, index) => {
+                        const [teamA, teamB] = match.split(' vs ');
+                        drawHTML += `<tr><td>${teamA}</td><td>vs</td><td>${teamB}</td><td>Tisch ${index + 1}</td></tr>`;
+                    });
+
+                    drawHTML += '</table>';
+
+                    localStorage.setItem('auslosung2', drawHTML);
+                    localStorage.setItem('matches', JSON.stringify([...existingMatches, ...candidateMatches]));
+                    document.getElementById('draw-result').innerHTML = drawHTML;
+                    return;
+                }
+            }
+
+            alert("Es gibt keine mögliche Paarung mehr für diese Auslosung. Bitte machen Sie einen Reset für diese Auslosung und versuchen Sie es erneut.");
         }
 
         function shuffleArray(arr) {
@@ -112,57 +130,61 @@
         });
 
         function resetDraw() {
-            localStorage.removeItem('auslosung3');
+            localStorage.removeItem('auslosung2');
             localStorage.removeItem('matches');
             document.getElementById('draw-result').innerHTML = '';
             alert("Die Auslosung wurde zurückgesetzt.");
         }
     </script>
 
+    <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/watt-turnier-app/service-worker.js")
+        .catch(err => console.log("SW registration failed", err));
+    }
+    </script>
 
-<!-- ✅ Menüleiste -->
-<nav class="app-menu">
-  <a href="index.html">🏠<br>Anmeldung</a>
-  <a href="vorrunde.html">📋<br>Vorrunde</a>
-  <a href="auslosung1.html">🎲<br>Auslosung 1</a>
-  <a href="auslosung2.html">🎲<br>Auslosung 2</a>
-  <a href="auslosung3.html">🎲<br>Auslosung 3</a>
-  <a href="auslosung4.html">🎲<br>Auslosung 4</a>
-  <a href="auslosung5.html">🎲<br>Auslosung 5</a>
-  <a href="viertelfinale.html">🏆<br>Viertelfinale</a>
-  <a href="halbfinale.html">🥈<br>Halbfinale</a>
-  <a href="finale.html">🥇<br>Finale</a>
-</nav>
+    <nav class="app-menu">
+      <a href="index.html">🏠<br>Anmeldung</a>
+      <a href="vorrunde.html">📋<br>Vorrunde</a>
+      <a href="auslosung1.html">🎲<br>Auslosung 1</a>
+      <a href="auslosung2.html">🎲<br>Auslosung 2</a>
+      <a href="auslosung3.html">🎲<br>Auslosung 3</a>
+      <a href="auslosung4.html">🎲<br>Auslosung 4</a>
+      <a href="auslosung5.html">🎲<br>Auslosung 5</a>
+      <a href="viertelfinale.html">🏆<br>Viertelfinale</a>
+      <a href="halbfinale.html">🥈<br>Halbfinale</a>
+      <a href="finale.html">🥇<br>Finale</a>
+    </nav>
 
-<style>
-/* Menüleiste exakt wie in index.html */
-.app-menu {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background-color: #3656A7;
-  display: flex;
-  justify-content: space-around;
-  padding: 10px 0;
-  border-top: 2px solid #2a4485;
-  z-index: 1000;
-}
+    <style>
+    .app-menu {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: #3656A7;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      border-top: 2px solid #2a4485;
+      z-index: 1000;
+    }
 
-.app-menu a {
-  color: white;
-  text-decoration: none;
-  font-size: 14px;
-  text-align: center;
-  flex: 1;
-}
+    .app-menu a {
+      color: white;
+      text-decoration: none;
+      font-size: 14px;
+      text-align: center;
+      flex: 1;
+    }
 
-.app-menu a:hover {
-  background-color: #2a4485;
-  padding: 8px;
-  border-radius: 4px;
-}
-</style>
+    .app-menu a:hover {
+      background-color: #2a4485;
+      padding: 8px;
+      border-radius: 4px;
+    }
+    </style>
 
 </body>
 </html>

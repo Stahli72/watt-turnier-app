@@ -47,7 +47,6 @@
 <body>
     <h1>Auslosung 1</h1>
     <button class="button" onclick="generateDraw()">Auslosung</button>
-    <!-- <button class="button" onclick="window.location.href='vorrunde'">Zur Vorrunde</button> -->
     <button class="button" onclick="resetDraw()">Reset Auslosung</button>
 
     <div id="draw-result">
@@ -57,59 +56,65 @@
     <script>
         const previousDraw = localStorage.getItem('auslosung1') || null;
         const existingMatches = JSON.parse(localStorage.getItem('matches')) || [];
-        const teamsFromStorage = JSON.parse(localStorage.getItem('wattTeams')) || []; // Teams aus Vorrunde laden
+        const teamsFromStorage = JSON.parse(localStorage.getItem('wattTeams')) || [];
 
-        function matchExists(teamA, teamB, existingMatches) {
+        function matchExists(teamA, teamB, allMatches) {
             const directMatch = `${teamA} vs ${teamB}`;
             const reverseMatch = `${teamB} vs ${teamA}`;
-            return existingMatches.some(match => match === directMatch || match === reverseMatch);
+            return allMatches.some(match => match === directMatch || match === reverseMatch);
         }
 
-        // Funktion für die Auslosung
         function generateDraw() {
-            // Sicherstellen, dass es genug Teams gibt (mindestens 2 Teams)
             if (teamsFromStorage.length < 2) {
                 alert("Es müssen mindestens 2 Teams vorhanden sein, um eine Auslosung zu machen.");
                 return;
             }
 
-            // Teams werden aus dem LocalStorage geladen
             const teamNames = teamsFromStorage.map(team => `${team.player1} / ${team.player2}`);
+            const maxAttempts = 500;
 
-            // Mischen der Teams
-            const shuffledTeams = shuffleArray(teamNames);
+            for (let attempt = 0; attempt < maxAttempts; attempt++) {
+                const shuffledTeams = shuffleArray([...teamNames]);
+                const candidateMatches = [];
+                let valid = true;
 
-            // Erstelle die Auslosung als Tabelle
-            let drawHTML = '<table><tr><th>Team 1</th><th>vs</th><th>Team 2</th><th>Tisch</th></tr>';
-            let currentMatches = [];
+                for (let i = 0; i < shuffledTeams.length; i += 2) {
+                    const teamA = shuffledTeams[i];
+                    const teamB = shuffledTeams[i + 1];
 
-            for (let i = 0; i < shuffledTeams.length; i += 2) {
-                const teamA = shuffledTeams[i];
-                const teamB = shuffledTeams[i + 1];
-                const match = `${teamA} vs ${teamB}`;
+                    if (!teamB) {
+                        valid = false;
+                        break;
+                    }
 
-                // Überprüfen, ob die Paarung schon existiert (auch in umgekehrter Reihenfolge)
-                if (matchExists(teamA, teamB, existingMatches)) {
-                    alert(`Die Paarung "${match}" existiert bereits. Versuche es mit einer neuen Auslosung.`);
-                    return;
+                    if (matchExists(teamA, teamB, [...existingMatches, ...candidateMatches])) {
+                        valid = false;
+                        break;
+                    }
+
+                    candidateMatches.push(`${teamA} vs ${teamB}`);
                 }
 
-                currentMatches.push(match);
-                drawHTML += `<tr><td>${teamA}</td><td>vs</td><td>${teamB}</td><td>Tisch ${Math.ceil(i / 2) + 1}</td></tr>`;
+                if (valid) {
+                    let drawHTML = '<table><tr><th>Team 1</th><th>vs</th><th>Team 2</th><th>Tisch</th></tr>';
+
+                    candidateMatches.forEach((match, index) => {
+                        const [teamA, teamB] = match.split(' vs ');
+                        drawHTML += `<tr><td>${teamA}</td><td>vs</td><td>${teamB}</td><td>Tisch ${index + 1}</td></tr>`;
+                    });
+
+                    drawHTML += '</table>';
+
+                    localStorage.setItem('auslosung1', drawHTML);
+                    localStorage.setItem('matches', JSON.stringify([...existingMatches, ...candidateMatches]));
+                    document.getElementById('draw-result').innerHTML = drawHTML;
+                    return;
+                }
             }
-            drawHTML += '</table>';
 
-            // Speichern der neuen Auslosung
-            localStorage.setItem('auslosung1', drawHTML);
-
-            // Speichern der aktuellen Paarungen
-            localStorage.setItem('matches', JSON.stringify([...existingMatches, ...currentMatches]));
-
-            // Zeige die Auslosung auf der Seite
-            document.getElementById('draw-result').innerHTML = drawHTML;
+            alert("Es gibt keine mögliche Paarung mehr für diese Auslosung. Bitte machen Sie einen Reset für diese Auslosung und versuchen Sie es erneut.");
         }
 
-        // Funktion, um das Array zu mischen (Fisher-Yates Shuffle)
         function shuffleArray(arr) {
             for (let i = arr.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -118,14 +123,12 @@
             return arr;
         }
 
-        // Lade die gespeicherte Auslosung, wenn sie existiert
         document.addEventListener('DOMContentLoaded', () => {
             if (previousDraw) {
                 document.getElementById('draw-result').innerHTML = previousDraw;
             }
         });
 
-        // Funktion, um die Auslosung zurückzusetzen
         function resetDraw() {
             localStorage.removeItem('auslosung1');
             localStorage.removeItem('matches');
@@ -134,69 +137,54 @@
         }
     </script>
 
-<!-- Service Worker Registrierung -->
-<script>
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/watt-turnier-app/service-worker.js")
-    .catch(err => console.log("SW registration failed", err));
-}
-</script>
+    <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/watt-turnier-app/service-worker.js")
+        .catch(err => console.log("SW registration failed", err));
+    }
+    </script>
 
+    <nav class="app-menu">
+      <a href="index.html">🏠<br>Anmeldung</a>
+      <a href="vorrunde.html">📋<br>Vorrunde</a>
+      <a href="auslosung1.html">🎲<br>Auslosung 1</a>
+      <a href="auslosung2.html">🎲<br>Auslosung 2</a>
+      <a href="auslosung3.html">🎲<br>Auslosung 3</a>
+      <a href="auslosung4.html">🎲<br>Auslosung 4</a>
+      <a href="auslosung5.html">🎲<br>Auslosung 5</a>
+      <a href="viertelfinale.html">🏆<br>Viertelfinale</a>
+      <a href="halbfinale.html">🥈<br>Halbfinale</a>
+      <a href="finale.html">🥇<br>Finale</a>
+    </nav>
 
-<!-- ✅ Menüleiste -->
-<nav class="app-menu">
-  <a href="index.html">🏠<br>Anmeldung</a>
-  <a href="vorrunde.html">📋<br>Vorrunde</a>
-  <a href="auslosung1.html">🎲<br>Auslosung 1</a>
-  <a href="auslosung2.html">🎲<br>Auslosung 2</a>
-  <a href="auslosung3.html">🎲<br>Auslosung 3</a>
-  <a href="auslosung4.html">🎲<br>Auslosung 4</a>
-  <a href="auslosung5.html">🎲<br>Auslosung 5</a>
-  <a href="viertelfinale.html">🏆<br>Viertelfinale</a>
-  <a href="halbfinale.html">🥈<br>Halbfinale</a>
-  <a href="finale.html">🥇<br>Finale</a>
-</nav>
+    <style>
+    .app-menu {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: #3656A7;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      border-top: 2px solid #2a4485;
+      z-index: 1000;
+    }
 
-<style>
-/* Menüleiste exakt wie in index.html */
-.app-menu {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background-color: #3656A7;
-  display: flex;
-  justify-content: space-around;
-  padding: 10px 0;
-  border-top: 2px solid #2a4485;
-  z-index: 1000;
-}
+    .app-menu a {
+      color: white;
+      text-decoration: none;
+      font-size: 14px;
+      text-align: center;
+      flex: 1;
+    }
 
-.app-menu a {
-  color: white;
-  text-decoration: none;
-  font-size: 14px;
-  text-align: center;
-  flex: 1;
-}
-
-.app-menu a:hover {
-  background-color: #2a4485;
-  padding: 8px;
-  border-radius: 4px;
-}
-</style>
-
+    .app-menu a:hover {
+      background-color: #2a4485;
+      padding: 8px;
+      border-radius: 4px;
+    }
+    </style>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
